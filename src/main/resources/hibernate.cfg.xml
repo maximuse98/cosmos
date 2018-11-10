@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/cosmos</property>
+        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password"></property>
+
+        <mapping class="entity.ClientEntity"/>
+        <mapping class="entity.ClientOrderEntity"/>
+        <mapping class="entity.ClientRequestEntity"/>
+        <mapping class="entity.ContractEntity"/>
+        <mapping class="entity.InvoiceEntity"/>
+        <mapping class="entity.InvoiceProductEntity"/>
+        <mapping class="entity.OrderProductEntity"/>
+        <mapping class="entity.ProductEntity"/>
+        <mapping class="entity.RequestProductEntity"/>
+        <mapping class="entity.UsersEntity"/>
+
+        <!-- DB schema will be updated if needed -->
+        <!-- <property name="hbm2ddl.auto">update</property> -->
+    </session-factory>
+</hibernate-configuration>
