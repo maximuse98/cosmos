@@ -1,5 +1,6 @@
 package models;
 
+import entity.ClientEntity;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Client {
@@ -11,14 +12,14 @@ public class Client {
     private SimpleStringProperty adress;
     private SimpleStringProperty email;
 
-    public Client(String id, String name, String surname, String phone, String phone2, String adress, String email) {
-        this.id = new SimpleStringProperty(id);
-        this.name = new SimpleStringProperty(name);
-        this.surname = new SimpleStringProperty(surname);
-        this.phone = new SimpleStringProperty(phone);
-        this.phone2 = new SimpleStringProperty(phone2);
-        this.adress = new SimpleStringProperty(adress);
-        this.email = new SimpleStringProperty(email);
+    public Client(ClientEntity client) {
+        this.id = new SimpleStringProperty(Integer.toString(client.getId()));
+        this.name = new SimpleStringProperty(client.getName());
+        this.surname = new SimpleStringProperty(client.getSurname());
+        this.phone = new SimpleStringProperty(client.getPhone());
+        this.phone2 = new SimpleStringProperty(client.getPhone2());
+        this.adress = new SimpleStringProperty(client.getAdress());
+        this.email = new SimpleStringProperty(client.getEmail());
     }
 
     public String getId() {

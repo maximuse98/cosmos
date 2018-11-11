@@ -1,6 +1,8 @@
 package controller;
 
 import entity.ClientEntity;
+import entity.ClientRequestEntity;
+import entity.RequestProductEntity;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,17 +13,19 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import models.Client;
+import models.Product;
+import models.Request;
+import models.RequestProduct;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import util.HibernateUtil;
 
 import java.net.URL;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ManagerController implements Initializable {
 
+    //client
     @FXML
     private TableColumn clientIdColumn;
     @FXML
@@ -57,8 +61,28 @@ public class ManagerController implements Initializable {
     @FXML
     private TableView clientTable;
 
+    //request
+    @FXML
+    private TableColumn requestIdColumn;
+    @FXML
+    private TableColumn requestClientIdColumn;
+    @FXML
+    private TableColumn requestColumn;
+    @FXML
+    private TableColumn requestCheckedColumn;
+    @FXML
+    private TableColumn requestApprovedColumn;
+    @FXML
+    private TableColumn requestProductColumn;
+    @FXML
+    private TableColumn requestCountColumn;
+    @FXML
+    private TableView requestTable;
+    @FXML
+    private TableView requestProductTable;
+
+
     private String login;
-    private ObservableList<Client> users;
     private final Session session = HibernateUtil.getSessionFactory();
 
     public ManagerController()  {
@@ -66,17 +90,49 @@ public class ManagerController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        users = FXCollections.observableArrayList();
-        String hql = " FROM ClientEntity ";
-        Query query = session.createQuery(hql);
-        Collection data = query.list();
-        Iterator iter = data.iterator();
-        while(iter.hasNext()){
-            ClientEntity user = (ClientEntity) iter.next();
-            users.add(new Client(Integer.toString(user.getId()),user.getName(),user.getSurname(),user.getPhone(),user.getPhone2(),user.getAdress(),user.getEmail()));
-        }
-        clientTable.setItems(users);
         this.setFactories();
+        this.setAllClients();
+        this.setAllRequests();
+    }
+
+    private void setAllClients(){
+        ObservableList<Client> usersList = FXCollections.observableArrayList();
+        this.setFactories();
+        Query query1 = session.createQuery(" FROM ClientEntity ");
+        Iterator iter = query1.list().iterator();
+        while(iter.hasNext()){
+            ClientEntity clientEntity = (ClientEntity) iter.next();
+            usersList.add(new Client(clientEntity));
+        }
+        clientTable.setItems(usersList);
+    }
+    private void setAllRequests(){
+        ObservableList<Request> requestsList = FXCollections.observableArrayList();
+
+        Query query = session.createQuery(" FROM ClientRequestEntity ");
+        Iterator iter = query.list().iterator();
+        while(iter.hasNext()){
+            ClientRequestEntity requestEntity = (ClientRequestEntity) iter.next();
+
+            Query query2 = session.createQuery(" FROM RequestProductEntity WHERE clientRequestByRequestId.id = "+requestEntity.getId());
+            Iterator iter2 = query2.list().iterator();
+            ObservableList<RequestProduct> products = FXCollections.observableArrayList();
+            while(iter2.hasNext()){
+                RequestProductEntity requestProduct =(RequestProductEntity) iter2.next();
+                Product product = new Product(requestProduct.getProductByProductId());
+                products.add(new RequestProduct(product.getName(),requestProduct.getCount()));
+            }
+            Request request = new Request(requestEntity);
+            request.setRequestsProducts(products);
+            requestsList.add(request);
+        }
+        requestTable.setItems(requestsList);
+    }
+
+    public void onRequestTableClick(){
+        Request selectedRequest = (Request) requestTable.getSelectionModel().getSelectedItem();
+        ObservableList<RequestProduct> products = selectedRequest.getRequestsProducts();
+        requestProductTable.setItems(products);
     }
 
     private void setFactories() {
@@ -88,6 +144,14 @@ public class ManagerController implements Initializable {
         clientAdressColumn.setCellValueFactory(new PropertyValueFactory<Client,String>("adress"));
         clientEmailColumn.setCellValueFactory(new PropertyValueFactory<Client,String>("email"));
 
+        requestIdColumn.setCellValueFactory(new PropertyValueFactory<Request,String>("id"));
+        requestClientIdColumn.setCellValueFactory(new PropertyValueFactory<Request,String>("clientName"));
+        requestColumn.setCellValueFactory(new PropertyValueFactory<Request,String>("request"));
+        requestCheckedColumn.setCellValueFactory(new PropertyValueFactory<Request,String>("checked"));
+        requestApprovedColumn.setCellValueFactory(new PropertyValueFactory<Request,String>("approved"));
+
+        requestProductColumn.setCellValueFactory(new PropertyValueFactory<RequestProduct,String>("productName"));
+        requestCountColumn.setCellValueFactory(new PropertyValueFactory<RequestProduct,String>("count"));
     }
 
     public void setLogin(String login) {
