@@ -16,8 +16,6 @@ import org.hibernate.query.Query;
 import util.HibernateUtil;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class LoginController{
     private Callback<Class<?>, Object> callback;

@@ -24,13 +24,13 @@
                            <children>
                               <TableView fx:id="clientTable" layoutX="15.0" layoutY="19.0" prefHeight="343.0" prefWidth="806.0">
                                 <columns>
-                                  <TableColumn maxWidth="50.0" prefWidth="50.0" text="ID" />
-                                  <TableColumn maxWidth="90.0" prefWidth="87.0" text="Имя" />
-                                    <TableColumn maxWidth="110.0" prefWidth="108.0" text="Фамилия" />
-                                    <TableColumn maxWidth="100.0" prefWidth="94.0" text="Телефон 1" />
-                                    <TableColumn maxWidth="100.0" prefWidth="100.0" text="Телефон 2" />
-                                    <TableColumn maxWidth="200.0" minWidth="0.0" prefWidth="200.0" text="Адрес" />
-                                    <TableColumn maxWidth="180.0" prefWidth="168.0" text="E-mail" />
+                                  <TableColumn fx:id="clientIdColumn" maxWidth="50.0" prefWidth="50.0" text="ID" />
+                                  <TableColumn fx:id="clientNameColumn" maxWidth="90.0" prefWidth="87.0" text="Имя" />
+                                    <TableColumn fx:id="clientSurnameColumn" maxWidth="110.0" prefWidth="108.0" text="Фамилия" />
+                                    <TableColumn fx:id="clientPhoneColumn" maxWidth="100.0" prefWidth="94.0" text="Телефон 1" />
+                                    <TableColumn fx:id="clientPhone2Column" maxWidth="100.0" prefWidth="100.0" text="Телефон 2" />
+                                    <TableColumn fx:id="clientAdressColumn" maxWidth="200.0" minWidth="0.0" prefWidth="200.0" text="Адрес" />
+                                    <TableColumn fx:id="clientEmailColumn" maxWidth="180.0" prefWidth="168.0" text="E-mail" />
                                 </columns>
                               </TableView>
                               <TextField fx:id="clientName" layoutX="58.0" layoutY="370.0" prefHeight="25.0" prefWidth="92.0" />
