@@ -9,6 +9,7 @@ public class OrderProductEntity {
     private Integer count;
     private Integer rest;
     private ClientOrderEntity clientOrderByOrderId;
+    private ProductEntity productByProductId;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -70,5 +71,15 @@ public class OrderProductEntity {
 
     public void setClientOrderByOrderId(ClientOrderEntity clientOrderByOrderId) {
         this.clientOrderByOrderId = clientOrderByOrderId;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    public ProductEntity getProductByProductId() {
+        return productByProductId;
+    }
+
+    public void setProductByProductId(ProductEntity productByProductId) {
+        this.productByProductId = productByProductId;
     }
 }

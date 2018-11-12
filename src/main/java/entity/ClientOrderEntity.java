@@ -3,12 +3,13 @@ package entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "client_order", schema = "cosmos", catalog = "")
+@Table(name = "client_order", schema = "cosmos")
 public class ClientOrderEntity {
     private int id;
     private Integer requestId;
     private Byte payment;
     private ClientEntity clientByClientId;
+    private ContractEntity contractByContractId;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -67,6 +68,12 @@ public class ClientOrderEntity {
     public ClientEntity getClientByClientId() {
         return clientByClientId;
     }
+
+    @ManyToOne
+    @JoinColumn(name = "contract_id", referencedColumnName = "id")
+    public ContractEntity getContractByContractId(){ return contractByContractId;}
+
+    public void setContractByContractId(ContractEntity contractByContractId){this.contractByContractId = contractByContractId;}
 
     public void setClientByClientId(ClientEntity clientByClientId) {
         this.clientByClientId = clientByClientId;

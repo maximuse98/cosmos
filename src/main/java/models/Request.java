@@ -11,8 +11,8 @@ public class Request {
     private SimpleStringProperty id;
     private SimpleStringProperty clientName;
     private SimpleStringProperty request;
-    private SimpleStringProperty checked;
-    private SimpleStringProperty approved;
+    private Boolean checked;
+    private Boolean approved;
 
     private ClientEntity client;
     private ObservableList<RequestProduct> requestsProducts;
@@ -21,8 +21,8 @@ public class Request {
         this.id = new SimpleStringProperty(Integer.toString(clientRequest.getId()));
         this.client = clientRequest.getClientByClientId();
         this.request = new SimpleStringProperty(clientRequest.getRequest());
-        this.checked = new SimpleStringProperty(clientRequest.getChecked().toString());
-        this.approved = new SimpleStringProperty(clientRequest.getApproved().toString());
+        this.checked = new Boolean(clientRequest.getChecked()!=0);
+        this.approved = new Boolean(clientRequest.getApproved()!=0);
         this.clientName = new SimpleStringProperty(client.getName()+" "+client.getSurname());
     }
 
@@ -62,28 +62,20 @@ public class Request {
         this.request.set(request);
     }
 
-    public String getChecked() {
-        return checked.get();
-    }
-
-    public SimpleStringProperty checkedProperty() {
+    public Boolean getChecked() {
         return checked;
     }
 
-    public void setChecked(String checked) {
-        this.checked.set(checked);
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
     }
 
-    public String getApproved() {
-        return approved.get();
-    }
-
-    public SimpleStringProperty approvedProperty() {
+    public Boolean getApproved() {
         return approved;
     }
 
-    public void setApproved(String approved) {
-        this.approved.set(approved);
+    public void setApproved(Boolean approved) {
+        this.approved = approved;
     }
 
     public ClientEntity getClient() {

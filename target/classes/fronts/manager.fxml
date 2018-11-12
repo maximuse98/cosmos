@@ -50,18 +50,18 @@
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <TableView fx:id="requestTable" layoutX="21.0" layoutY="22.0" onMouseClicked="#onRequestTableClick" prefHeight="333.0" prefWidth="532.0">
+                              <TableView fx:id="requestTable" layoutX="33.0" layoutY="22.0" onMouseClicked="#onRequestTableClick" prefHeight="333.0" prefWidth="536.0">
                                 <columns>
                                     <TableColumn fx:id="requestIdColumn" prefWidth="45.0" text="ID" />
                                     <TableColumn fx:id="requestClientIdColumn" prefWidth="187.0" text="Клиент" />
-                                    <TableColumn fx:id="requestColumn" prefWidth="129.0" text="Заявка" />
-                                    <TableColumn fx:id="requestCheckedColumn" prefWidth="83.0" text="Рассмотрено" />
-                                    <TableColumn fx:id="requestApprovedColumn" prefWidth="87.0" text="Утверждено" />
+                                    <TableColumn fx:id="requestColumn" prefWidth="140.0" text="Заявка" />
+                                    <TableColumn fx:id="requestCheckedColumn" prefWidth="84.0" text="Рассмотрено" />
+                                    <TableColumn fx:id="requestApprovedColumn" prefWidth="79.0" text="Утверждено" />
                                 </columns>
                               </TableView>
-                              <TableView fx:id="requestProductTable" layoutX="568.0" layoutY="22.0" prefHeight="332.0" prefWidth="239.0">
+                              <TableView fx:id="requestProductTable" layoutX="590.0" layoutY="22.0" prefHeight="333.0" prefWidth="217.0">
                                 <columns>
-                                    <TableColumn fx:id="requestProductColumn" prefWidth="163.0" text="Товар" />
+                                    <TableColumn fx:id="requestProductColumn" prefWidth="141.0" text="Товар" />
                                     <TableColumn fx:id="requestCountColumn" prefWidth="75.0" text="Количество" />
                                 </columns>
                               </TableView>
@@ -82,31 +82,30 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="450.0" prefWidth="763.0">
                            <children>
-                              <TableView layoutX="28.0" layoutY="22.0" prefHeight="333.0" prefWidth="359.0">
-                                 <columns>
-                                    <TableColumn prefWidth="45.0" text="ID" />
-                                    <TableColumn prefWidth="75.0" text="ID клиента" />
-                                    <TableColumn prefWidth="73.0" text="№ заявки" />
-                                    <TableColumn prefWidth="89.0" text="№ договора" />
-                                    <TableColumn prefWidth="76.0" text="Оплачено" />
-                                 </columns>
+                              <TableView fx:id="orderTable" layoutX="33.0" layoutY="21.0" onMouseClicked="#onOrderTableClick" prefHeight="333.0" prefWidth="469.0">
+                                <columns>
+                                    <TableColumn fx:id="orderIdColumn" prefWidth="45.0" text="ID" />
+                                    <TableColumn fx:id="orderClientColumn" prefWidth="138.0" text="Клиент" />
+                                    <TableColumn fx:id="orderRequestColumn" prefWidth="107.0" text="Заявка" />
+                                    <TableColumn fx:id="orderContractColumn" prefWidth="107.0" text="Договор" />
+                                    <TableColumn fx:id="orderPaymentColumn" prefWidth="71.0" text="Оплачено" />
+                                </columns>
                               </TableView>
-                              <TextField fx:id="client_id" layoutX="73.0" layoutY="361.0" prefHeight="25.0" prefWidth="79.0" />
+                              <TableView fx:id="orderProductTable" layoutX="523.0" layoutY="21.0" prefHeight="333.0" prefWidth="284.0">
+                                <columns>
+                                    <TableColumn fx:id="orderProductColumn" prefWidth="139.0" text="Товар" />
+                                    <TableColumn fx:id="orderCountColumn" prefWidth="78.0" text="Количество" />
+                                    <TableColumn fx:id="orderRestColumn" prefWidth="65.0" text="Остаток" />
+                                </columns>
+                              </TableView>
+                              <TextField fx:id="client_id" layoutX="60.0" layoutY="361.0" prefHeight="25.0" prefWidth="79.0" />
                               <TextField fx:id="request_id" layoutX="156.0" layoutY="361.0" prefHeight="25.0" prefWidth="67.0" />
-                              <TextField fx:id="contract_id" layoutX="226.0" layoutY="361.0" prefHeight="25.0" prefWidth="89.0" />
-                              <CheckBox fx:id="payment" layoutX="342.0" layoutY="365.0" mnemonicParsing="false" />
+                              <TextField fx:id="contract_id" layoutX="234.0" layoutY="361.0" prefHeight="25.0" prefWidth="89.0" />
+                              <CheckBox fx:id="payment" layoutX="460.0" layoutY="365.0" mnemonicParsing="false" />
                               <Button fx:id="addButtonOrder" layoutX="481.0" layoutY="399.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="79.0" text="Добавить" />
                               <Button fx:id="removeButtonOrder" layoutX="655.0" layoutY="399.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="79.0" text="Удалить" />
                               <Button fx:id="changeButtonOrder" layoutX="568.0" layoutY="399.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="79.0" text="Изменить" />
-                              <TableView layoutX="420.0" layoutY="23.0" prefHeight="332.0" prefWidth="314.0">
-                                 <columns>
-                                    <TableColumn prefWidth="75.0" text="№ заказа" />
-                                    <TableColumn prefWidth="75.0" text="ID товара" />
-                                    <TableColumn prefWidth="88.0" text="Количество" />
-                                    <TableColumn prefWidth="75.0" text="Остаток" />
-                                 </columns>
-                              </TableView>
-                              <TextField fx:id="order_id" layoutX="420.0" layoutY="361.0" prefHeight="25.0" prefWidth="74.0" />
+                              <TextField fx:id="order_id" layoutX="346.0" layoutY="361.0" prefHeight="25.0" prefWidth="74.0" />
                               <TextField fx:id="product_id" layoutX="498.0" layoutY="361.0" prefHeight="25.0" prefWidth="72.0" />
                               <TextField fx:id="count" layoutX="575.0" layoutY="361.0" prefHeight="25.0" prefWidth="82.0" />
                               <TextField fx:id="rest" layoutX="665.0" layoutY="361.0" prefHeight="25.0" prefWidth="69.0" />

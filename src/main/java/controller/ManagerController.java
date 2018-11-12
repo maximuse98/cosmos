@@ -1,21 +1,18 @@
 package controller;
 
-import entity.ClientEntity;
-import entity.ClientRequestEntity;
-import entity.RequestProductEntity;
+import entity.*;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import models.Client;
-import models.Product;
-import models.Request;
-import models.RequestProduct;
+import javafx.util.Callback;
+import models.*;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import util.HibernateUtil;
@@ -81,6 +78,27 @@ public class ManagerController implements Initializable {
     @FXML
     private TableView requestProductTable;
 
+    //order
+    @FXML
+    private TableColumn orderIdColumn;
+    @FXML
+    private TableColumn orderClientColumn;
+    @FXML
+    private TableColumn orderRequestColumn;
+    @FXML
+    private TableColumn orderContractColumn;
+    @FXML
+    private TableColumn orderPaymentColumn;
+    @FXML
+    private TableColumn orderProductColumn;
+    @FXML
+    private TableColumn orderCountColumn;
+    @FXML
+    private TableColumn orderRestColumn;
+    @FXML
+    private TableView orderTable;
+    @FXML
+    private TableView orderProductTable;
 
     private String login;
     private final Session session = HibernateUtil.getSessionFactory();
@@ -93,6 +111,7 @@ public class ManagerController implements Initializable {
         this.setFactories();
         this.setAllClients();
         this.setAllRequests();
+        this.setAllOrders();
     }
 
     private void setAllClients(){
@@ -128,11 +147,39 @@ public class ManagerController implements Initializable {
         }
         requestTable.setItems(requestsList);
     }
+    private void setAllOrders(){
+        ObservableList<Order> ordersList = FXCollections.observableArrayList();
+
+        Query query = session.createQuery(" FROM ClientOrderEntity ");
+        Iterator iter = query.list().iterator();
+        while(iter.hasNext()){
+            ClientOrderEntity orderEntity = (ClientOrderEntity) iter.next();
+
+            Query query2 = session.createQuery(" FROM OrderProductEntity WHERE clientOrderByOrderId.id = "+orderEntity.getId());
+            Iterator iter2 = query2.list().iterator();
+            ObservableList<OrderProduct> products = FXCollections.observableArrayList();
+            while(iter2.hasNext()){
+                OrderProductEntity orderProduct =(OrderProductEntity) iter2.next();
+                Product product = new Product(orderProduct.getProductByProductId());
+                products.add(new OrderProduct(product.getName(),orderProduct.getCount(),orderProduct.getRest()));
+            }
+            Order order = new Order(orderEntity);
+            order.setOrdersProducts(products);
+            ordersList.add(order);
+        }
+        orderTable.setItems(ordersList);
+    }
 
     public void onRequestTableClick(){
         Request selectedRequest = (Request) requestTable.getSelectionModel().getSelectedItem();
         ObservableList<RequestProduct> products = selectedRequest.getRequestsProducts();
         requestProductTable.setItems(products);
+    }
+    public void onOrderTableClick(){
+        Order selectedRequest = (Order) orderTable.getSelectionModel().getSelectedItem();
+        ObservableList<OrderProduct> products = selectedRequest.getOrdersProducts();
+        if(!products.isEmpty()){orderProductTable.setItems(products);}
+        else{orderProductTable.setItems(null);}
     }
 
     private void setFactories() {
@@ -147,11 +194,65 @@ public class ManagerController implements Initializable {
         requestIdColumn.setCellValueFactory(new PropertyValueFactory<Request,String>("id"));
         requestClientIdColumn.setCellValueFactory(new PropertyValueFactory<Request,String>("clientName"));
         requestColumn.setCellValueFactory(new PropertyValueFactory<Request,String>("request"));
-        requestCheckedColumn.setCellValueFactory(new PropertyValueFactory<Request,String>("checked"));
-        requestApprovedColumn.setCellValueFactory(new PropertyValueFactory<Request,String>("approved"));
+        requestCheckedColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures, ObservableValue>() {
+            @Override
+            public ObservableValue call(TableColumn.CellDataFeatures param) {
+                Request request = (Request) param.getValue();
+                SimpleBooleanProperty p = new SimpleBooleanProperty(request.getChecked());
+                return p;
+            }
+        });
+        requestCheckedColumn.setCellFactory(new Callback<TableColumn, TableCell>() {
+            @Override
+            public TableCell call(TableColumn param) {
+                CheckBoxTableCell cell = new CheckBoxTableCell();
+                cell.setAlignment(Pos.CENTER);
+                return cell;
+            }
+        });
+        requestApprovedColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures, ObservableValue>() {
+            @Override
+            public ObservableValue call(TableColumn.CellDataFeatures param) {
+                Request request = (Request) param.getValue();
+                SimpleBooleanProperty p = new SimpleBooleanProperty(request.getApproved());
+                return p;
+            }
+        });
+        requestApprovedColumn.setCellFactory(new Callback<TableColumn, TableCell>() {
+            @Override
+            public TableCell call(TableColumn param) {
+                CheckBoxTableCell cell = new CheckBoxTableCell();
+                cell.setAlignment(Pos.CENTER);
+                return cell;
+            }
+        });
 
         requestProductColumn.setCellValueFactory(new PropertyValueFactory<RequestProduct,String>("productName"));
         requestCountColumn.setCellValueFactory(new PropertyValueFactory<RequestProduct,String>("count"));
+
+        orderIdColumn.setCellValueFactory(new PropertyValueFactory<Product,String>("id"));
+        orderClientColumn.setCellValueFactory(new PropertyValueFactory<Product,String>("clientName"));
+        orderRequestColumn.setCellValueFactory(new PropertyValueFactory<Product,String>("requestName"));
+        orderContractColumn.setCellValueFactory(new PropertyValueFactory<Product,String>("contratName"));
+        orderPaymentColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures, ObservableValue>() {
+            @Override
+            public ObservableValue call(TableColumn.CellDataFeatures param) {
+                Order order = (Order) param.getValue();
+                SimpleBooleanProperty p = new SimpleBooleanProperty(order.getPayment());
+                return p;
+            }
+        });
+        orderPaymentColumn.setCellFactory(new Callback<TableColumn, TableCell>() {
+            @Override
+            public TableCell call(TableColumn param) {
+                CheckBoxTableCell cell = new CheckBoxTableCell();
+                cell.setAlignment(Pos.CENTER);
+                return cell;
+            }
+        });
+        orderProductColumn.setCellValueFactory(new PropertyValueFactory<OrderProduct,String>("productName"));
+        orderCountColumn.setCellValueFactory(new PropertyValueFactory<OrderProduct,String>("count"));
+        orderRestColumn.setCellValueFactory(new PropertyValueFactory<OrderProduct,String>("rest"));
     }
 
     public void setLogin(String login) {
