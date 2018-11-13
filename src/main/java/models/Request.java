@@ -21,8 +21,8 @@ public class Request {
         this.id = new SimpleStringProperty(Integer.toString(clientRequest.getId()));
         this.client = clientRequest.getClientByClientId();
         this.request = new SimpleStringProperty(clientRequest.getRequest());
-        this.checked = new Boolean(clientRequest.getChecked()!=0);
-        this.approved = new Boolean(clientRequest.getApproved()!=0);
+        this.checked = clientRequest.getChecked() != 0;
+        this.approved = clientRequest.getApproved() != 0;
         this.clientName = new SimpleStringProperty(client.getName()+" "+client.getSurname());
     }
 

@@ -28,7 +28,7 @@ public class Order {
         this.id = new SimpleStringProperty(Integer.toString(order.getId()));
         this.client = order.getClientByClientId();
         this.clientName = new SimpleStringProperty(client.getName()+" "+client.getSurname());
-        this.payment = new Boolean(order.getPayment()!=0);
+        this.payment = order.getPayment() != 0;
 
         Query query1 = session.createQuery(" FROM ClientRequestEntity WHERE id = "+order.getRequestId());
         Iterator iter2 = query1.list().iterator();

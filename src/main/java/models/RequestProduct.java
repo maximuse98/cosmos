@@ -1,14 +1,17 @@
 package models;
 
+import entity.RequestProductEntity;
 import javafx.beans.property.SimpleStringProperty;
 
 public class RequestProduct {
+    private SimpleStringProperty id;
     private SimpleStringProperty productName;
     private SimpleStringProperty count;
 
-    public RequestProduct(String productName, int count) {
+    public RequestProduct(RequestProductEntity requestProduct, String productName) {
+        this.id = new SimpleStringProperty(Integer.toString(requestProduct.getId()));
         this.productName = new SimpleStringProperty(productName);
-        this.count = new SimpleStringProperty(Integer.toString(count));
+        this.count = new SimpleStringProperty(Integer.toString(requestProduct.getCount()));
     }
 
     public String getProductName() {

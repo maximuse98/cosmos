@@ -139,7 +139,7 @@ public class ManagerController implements Initializable {
             while(iter2.hasNext()){
                 RequestProductEntity requestProduct =(RequestProductEntity) iter2.next();
                 Product product = new Product(requestProduct.getProductByProductId());
-                products.add(new RequestProduct(product.getName(),requestProduct.getCount()));
+                products.add(new RequestProduct(requestProduct,product.getName()));
             }
             Request request = new Request(requestEntity);
             request.setRequestsProducts(products);
@@ -161,7 +161,7 @@ public class ManagerController implements Initializable {
             while(iter2.hasNext()){
                 OrderProductEntity orderProduct =(OrderProductEntity) iter2.next();
                 Product product = new Product(orderProduct.getProductByProductId());
-                products.add(new OrderProduct(product.getName(),orderProduct.getCount(),orderProduct.getRest()));
+                products.add(new OrderProduct(orderProduct,product.getName()));
             }
             Order order = new Order(orderEntity);
             order.setOrdersProducts(products);

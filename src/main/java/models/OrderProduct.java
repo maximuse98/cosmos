@@ -1,16 +1,31 @@
 package models;
 
+import entity.OrderProductEntity;
 import javafx.beans.property.SimpleStringProperty;
 
 public class OrderProduct {
+    private SimpleStringProperty id;
     private SimpleStringProperty productName;
     private SimpleStringProperty count;
     private SimpleStringProperty rest;
 
-    public OrderProduct(String productName, int count, int rest) {
+    public OrderProduct(OrderProductEntity orderProduct, String productName) {
+        this.id = new SimpleStringProperty(Integer.toString(orderProduct.getId()));
         this.productName = new SimpleStringProperty(productName);
-        this.count = new SimpleStringProperty(Integer.toString(count));
-        this.rest = new SimpleStringProperty(Integer.toString(rest));
+        this.count = new SimpleStringProperty(Integer.toString(orderProduct.getCount()));
+        this.rest = new SimpleStringProperty(Integer.toString(orderProduct.getRest()));
+    }
+
+    public String getId() {
+        return id.get();
+    }
+
+    public SimpleStringProperty idProperty() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id.set(id);
     }
 
     public String getProductName() {
