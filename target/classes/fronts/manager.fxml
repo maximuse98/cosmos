@@ -116,7 +116,7 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="450.0" prefWidth="798.0">
                            <children>
-                              <TableView fx:id="invoiceTable" onMouseClicked="#onInvoiceTableClick" layoutX="34.0" layoutY="26.0" prefHeight="333.0" prefWidth="434.0">
+                              <TableView fx:id="invoiceTable" layoutX="34.0" layoutY="26.0" onMouseClicked="#onInvoiceTableClick" prefHeight="333.0" prefWidth="434.0">
                                  <columns>
                                     <TableColumn fx:id="invoiceIdColumn" prefWidth="45.0" text="ID" />
                                     <TableColumn fx:id="invoiceContractColumn" prefWidth="206.0" text="Договор" />
