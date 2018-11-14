@@ -9,6 +9,7 @@ public class InvoiceProductEntity {
     private Integer count;
     private Byte loaded;
     private InvoiceEntity invoiceByInvoiceId;
+    private ProductEntity productByProductId;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -70,5 +71,15 @@ public class InvoiceProductEntity {
 
     public void setInvoiceByInvoiceId(InvoiceEntity invoiceByInvoiceId) {
         this.invoiceByInvoiceId = invoiceByInvoiceId;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    public ProductEntity getProductByProductId() {
+        return productByProductId;
+    }
+
+    public void setProductByProductId(ProductEntity productByProductId) {
+        this.productByProductId = productByProductId;
     }
 }

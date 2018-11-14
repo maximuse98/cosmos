@@ -7,36 +7,41 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import util.HibernateUtil;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 
 public class Order {
     private SimpleStringProperty id;
     private SimpleStringProperty clientName;
     private SimpleStringProperty requestName;
-    private SimpleStringProperty contratName;
+    private SimpleStringProperty contractName;
     private Boolean payment;
+    private SimpleStringProperty beginDate;
+    private SimpleStringProperty endDate;
 
     private ClientEntity client;
     private ClientRequestEntity request;
-    private ContractEntity contract;
 
     private ObservableList<OrderProduct> ordersProducts;
 
     private final Session session = HibernateUtil.getSessionFactory();
+    private SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
     public Order(ClientOrderEntity order) {
         this.id = new SimpleStringProperty(Integer.toString(order.getId()));
         this.client = order.getClientByClientId();
         this.clientName = new SimpleStringProperty(client.getName()+" "+client.getSurname());
         this.payment = order.getPayment() != 0;
+        this.contractName = new SimpleStringProperty(order.getContract());
+        this.beginDate = new SimpleStringProperty(format.format(order.getBeginDate()));
+        this.endDate = new SimpleStringProperty(format.format(order.getEndDate()));
 
         Query query1 = session.createQuery(" FROM ClientRequestEntity WHERE id = "+order.getRequestId());
         Iterator iter2 = query1.list().iterator();
         while(iter2.hasNext()){
-            request = (ClientRequestEntity) iter2.next();
+            this.request = (ClientRequestEntity) iter2.next();
             this.requestName = new SimpleStringProperty(request.getRequest());
-            this.contract = order.getContractByContractId();
-            this.contratName = new SimpleStringProperty(contract.getContract());
         }
     }
 
@@ -84,16 +89,16 @@ public class Order {
         this.requestName.set(requestName);
     }
 
-    public String getContratName() {
-        return contratName.get();
+    public String getContractName() {
+        return contractName.get();
     }
 
-    public SimpleStringProperty contratNameProperty() {
-        return contratName;
+    public SimpleStringProperty contractNameProperty() {
+        return contractName;
     }
 
-    public void setContratName(String contratName) {
-        this.contratName.set(contratName);
+    public void setContractName(String contratName) {
+        this.contractName.set(contratName);
     }
 
     public Boolean getPayment() {
@@ -102,5 +107,29 @@ public class Order {
 
     public void setPayment(Boolean payment) {
         this.payment = payment;
+    }
+
+    public String getBeginDate() {
+        return beginDate.get();
+    }
+
+    public SimpleStringProperty beginDateProperty() {
+        return beginDate;
+    }
+
+    public void setBeginDate(String beginDate) {
+        this.beginDate.set(beginDate);
+    }
+
+    public String getEndDate() {
+        return endDate.get();
+    }
+
+    public SimpleStringProperty endDateProperty() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate.set(endDate);
     }
 }

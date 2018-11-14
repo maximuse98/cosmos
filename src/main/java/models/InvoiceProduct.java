@@ -15,4 +15,48 @@ public class InvoiceProduct {
         this.count = new SimpleStringProperty(Integer.toString(invoiceProduct.getCount()));
         this.loaded = invoiceProduct.getLoaded()!=0;
     }
+
+    public String getId() {
+        return id.get();
+    }
+
+    public SimpleStringProperty idProperty() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id.set(id);
+    }
+
+    public String getProductName() {
+        return productName.get();
+    }
+
+    public SimpleStringProperty productNameProperty() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName.set(productName);
+    }
+
+    public String getCount() {
+        return count.get();
+    }
+
+    public SimpleStringProperty countProperty() {
+        return count;
+    }
+
+    public void setCount(String count) {
+        this.count.set(count);
+    }
+
+    public Boolean getLoaded() {
+        return loaded;
+    }
+
+    public void setLoaded(Boolean loaded) {
+        this.loaded = loaded;
+    }
 }

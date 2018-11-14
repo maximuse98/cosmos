@@ -1,15 +1,18 @@
 package entity;
 
 import javax.persistence.*;
+import java.sql.Date;
 
 @Entity
 @Table(name = "client_order", schema = "cosmos")
 public class ClientOrderEntity {
     private int id;
     private Integer requestId;
-    private Byte payment;
     private ClientEntity clientByClientId;
-    private ContractEntity contractByContractId;
+    private String contract;
+    private Date beginDate;
+    private Date endDate;
+    private Byte payment;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -31,6 +34,38 @@ public class ClientOrderEntity {
         this.requestId = requestId;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "client_id", referencedColumnName = "id")
+    public ClientEntity getClientByClientId() {
+        return clientByClientId;
+    }
+
+    @Basic
+    @Column(name = "contract", nullable = true)
+    public String getContract() {
+        return contract;
+    }
+
+    public void setContract(String contract) {
+        this.contract = contract;
+    }
+
+    @Basic
+    @Column(name = "begin_date", nullable = true)
+    public Date getBeginDate() {
+        return beginDate;
+    }
+
+    public void setBeginDate(Date beginDate) {
+        this.beginDate = beginDate;
+    }
+
+    @Basic
+    @Column(name = "end_date", nullable = true)
+    public Date getEndDate() {
+        return endDate;
+    }
+
     @Basic
     @Column(name = "payment", nullable = true)
     public Byte getPayment() {
@@ -41,39 +76,9 @@ public class ClientOrderEntity {
         this.payment = payment;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ClientOrderEntity that = (ClientOrderEntity) o;
-
-        if (id != that.id) return false;
-        if (requestId != null ? !requestId.equals(that.requestId) : that.requestId != null) return false;
-        if (payment != null ? !payment.equals(that.payment) : that.payment != null) return false;
-
-        return true;
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
-
-    @Override
-    public int hashCode() {
-        int result = id;
-        result = 31 * result + (requestId != null ? requestId.hashCode() : 0);
-        result = 31 * result + (payment != null ? payment.hashCode() : 0);
-        return result;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "client_id", referencedColumnName = "id")
-    public ClientEntity getClientByClientId() {
-        return clientByClientId;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "contract_id", referencedColumnName = "id")
-    public ContractEntity getContractByContractId(){ return contractByContractId;}
-
-    public void setContractByContractId(ContractEntity contractByContractId){this.contractByContractId = contractByContractId;}
 
     public void setClientByClientId(ClientEntity clientByClientId) {
         this.clientByClientId = clientByClientId;

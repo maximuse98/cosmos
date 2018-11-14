@@ -116,11 +116,12 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="450.0" prefWidth="798.0">
                            <children>
-                              <TableView layoutX="24.0" layoutY="23.0" prefHeight="333.0" prefWidth="219.0">
+                              <TableView fx:id="invoiceTable" layoutX="34.0" layoutY="26.0" onMouseClicked="#onInvoiceTableClick" prefHeight="333.0" prefWidth="434.0">
                                  <columns>
-                                    <TableColumn prefWidth="45.0" text="ID" />
-                                    <TableColumn prefWidth="90.0" text="№ заказа" />
-                                    <TableColumn prefWidth="81.0" text="Оплачено" />
+                                    <TableColumn fx:id="invoiceIdColumn" prefWidth="45.0" text="ID" />
+                                    <TableColumn fx:id="invoiceContractColumn" prefWidth="206.0" text="Договор" />
+                                    <TableColumn fx:id="invoiceDateCreateColumn" prefWidth="101.0" text="Дата создания" />
+                                    <TableColumn fx:id="invoiceAgreedColumn" text="Согласовано" />
                                  </columns>
                               </TableView>
                               <TextField fx:id="order_id" layoutX="69.0" layoutY="359.0" prefHeight="25.0" prefWidth="93.0" />
@@ -129,12 +130,11 @@
                               <Button fx:id="addButtonInvoice" layoutX="493.0" layoutY="400.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="79.0" text="Добавить" />
                               <Button fx:id="removeButtonInvoice" layoutX="673.0" layoutY="400.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="79.0" text="Удалить" />
                               <Button fx:id="changeButtonInvoice" layoutX="586.0" layoutY="400.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="79.0" text="Изменить" />
-                              <TableView layoutX="438.0" layoutY="24.0" prefHeight="332.0" prefWidth="314.0">
+                              <TableView fx:id="invoiceProductTable" layoutX="482.0" layoutY="26.0" prefHeight="332.0" prefWidth="323.0">
                                  <columns>
-                                    <TableColumn prefWidth="75.0" text="№ счёта" />
-                                    <TableColumn prefWidth="75.0" text="ID товара" />
-                                    <TableColumn prefWidth="88.0" text="Количество" />
-                                    <TableColumn prefWidth="75.0" text="Отгружено" />
+                                    <TableColumn fx:id="invoiceProductNameColumn" prefWidth="172.0" text="Товар" />
+                                    <TableColumn fx:id="invoiceProductCountColumn" prefWidth="76.0" text="Количество" />
+                                    <TableColumn fx:id="invoiceProductLoadedColumn" prefWidth="73.0" text="Отгружено" />
                                  </columns>
                               </TableView>
                               <TextField fx:id="product_id" layoutX="521.0" layoutY="359.0" prefHeight="25.0" prefWidth="68.0" />
@@ -147,12 +147,13 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <TableView layoutX="18.0" layoutY="21.0" prefHeight="346.0" prefWidth="767.0">
+                              <TableView fx:id="contractTable" layoutX="36.0" layoutY="21.0" prefHeight="346.0" prefWidth="767.0">
                                 <columns>
-                                  <TableColumn prefWidth="85.0" text="№ договора" />
-                                  <TableColumn prefWidth="476.0" text="Договор" />
-                                    <TableColumn prefWidth="102.0" text="Начальная дата" />
-                                    <TableColumn minWidth="0.0" prefWidth="103.0" text="Конечная дата" />
+                                  <TableColumn fx:id="contractNameColumn" prefWidth="145.0" text="Договор" />
+                                  <TableColumn fx:id="contractClientNameColumn" prefWidth="289.0" text="Клиент" />
+                                  <TableColumn fx:id="contractBeginDateColumn" prefWidth="124.0" text="Начальная дата" />
+                                  <TableColumn fx:id="contractEndDateColumn" minWidth="0.0" prefWidth="123.0" text="Конечная дата" />
+                                  <TableColumn fx:id="contractPaymentColumn" prefWidth="84.0" text="Оплачено" />
                                 </columns>
                               </TableView>
                               <TextField fx:id="contract" layoutX="109.0" layoutY="375.0" prefHeight="25.0" prefWidth="470.0" />
@@ -161,7 +162,8 @@
                               <Button fx:id="changeButtonContract" layoutX="617.0" layoutY="411.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="79.0" text="Изменить" />
                               <TextField fx:id="end_date" layoutX="683.0" layoutY="375.0" prefHeight="25.0" prefWidth="102.0" />
                               <TextField fx:id="begin_date" layoutX="586.0" layoutY="375.0" prefHeight="25.0" prefWidth="90.0" />
-                           </children></AnchorPane>
+                           </children>
+                        </AnchorPane>
                      </content>
                   </Tab>
               </tabs>

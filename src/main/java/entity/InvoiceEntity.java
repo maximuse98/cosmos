@@ -1,12 +1,15 @@
 package entity;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "invoice", schema = "cosmos", catalog = "")
 public class InvoiceEntity {
     private int id;
     private Byte agreed;
+    private Date dateCreate;
+
     private ClientOrderEntity clientOrderByOrderId;
 
     @Id
@@ -27,6 +30,16 @@ public class InvoiceEntity {
 
     public void setAgreed(Byte agreed) {
         this.agreed = agreed;
+    }
+
+    @Basic
+    @Column(name = "date_create", nullable = true)
+    public Date getDateCreate() {
+        return dateCreate;
+    }
+
+    public void setDateCreate(Date dateCreate) {
+        this.dateCreate = dateCreate;
     }
 
     @Override
