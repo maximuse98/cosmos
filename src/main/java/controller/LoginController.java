@@ -12,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import util.HibernateUtil;
 
@@ -19,7 +20,7 @@ import java.io.IOException;
 
 public class LoginController{
     private Callback<Class<?>, Object> callback;
-    private final Session session = HibernateUtil.getSessionFactory();
+    private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
     @FXML
     private TextField loginField;
@@ -54,8 +55,10 @@ public class LoginController{
         String hql = "SELECT role" +
                 " FROM UsersEntity " +
                 " WHERE login LIKE '"+ loginField.getText()+"' AND password LIKE '"+ passwordField.getText() +"'";
+        Session session = sessionFactory.openSession();
         Query query = session.createQuery(hql);
         String result = (String) query.getSingleResult();
+        session.close();
 
         if(result.equals("manager")) this.createManager();
     }

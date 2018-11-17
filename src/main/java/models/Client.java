@@ -2,6 +2,11 @@ package models;
 
 import entity.ClientEntity;
 import javafx.beans.property.SimpleStringProperty;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+import util.HibernateUtil;
 
 public class Client {
     private SimpleStringProperty id;
@@ -11,6 +16,8 @@ public class Client {
     private SimpleStringProperty phone2;
     private SimpleStringProperty adress;
     private SimpleStringProperty email;
+
+    private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
     public Client(ClientEntity client) {
         this.id = new SimpleStringProperty(Integer.toString(client.getId()));
@@ -79,31 +86,50 @@ public class Client {
     }
 
     public void setId(String id) {
-
         this.id.set(id);
+        this.updateEntity();
     }
 
     public void setName(String name) {
         this.name.set(name);
+        this.updateEntity();
     }
 
     public void setSurname(String surname) {
         this.surname.set(surname);
+        this.updateEntity();
     }
 
     public void setPhone(String phone) {
         this.phone.set(phone);
+        this.updateEntity();
     }
 
     public void setPhone2(String phone2) {
         this.phone2.set(phone2);
+        this.updateEntity();
     }
 
     public void setAdress(String adress) {
         this.adress.set(adress);
+        this.updateEntity();
     }
 
     public void setEmail(String email) {
         this.email.set(email);
+        this.updateEntity();
+    }
+
+    private void updateEntity(){
+        try {
+            Session session = sessionFactory.openSession();
+            session.beginTransaction();
+            session.update(new ClientEntity(id,name,surname,phone,phone2,adress,email));
+            session.getTransaction().commit();
+            session.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

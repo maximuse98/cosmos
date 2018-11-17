@@ -4,6 +4,7 @@ import entity.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import util.HibernateUtil;
 
@@ -25,7 +26,7 @@ public class Order {
 
     private ObservableList<OrderProduct> ordersProducts;
 
-    private final Session session = HibernateUtil.getSessionFactory();
+    private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
     private SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
     public Order(ClientOrderEntity order) {
@@ -37,12 +38,14 @@ public class Order {
         this.beginDate = new SimpleStringProperty(format.format(order.getBeginDate()));
         this.endDate = new SimpleStringProperty(format.format(order.getEndDate()));
 
+        Session session = sessionFactory.openSession();
         Query query1 = session.createQuery(" FROM ClientRequestEntity WHERE id = "+order.getRequestId());
         Iterator iter2 = query1.list().iterator();
         while(iter2.hasNext()){
             this.request = (ClientRequestEntity) iter2.next();
             this.requestName = new SimpleStringProperty(request.getRequest());
         }
+        session.close();
     }
 
     public ObservableList<OrderProduct> getOrdersProducts() {

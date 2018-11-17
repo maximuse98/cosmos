@@ -5,15 +5,18 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
 import models.*;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import util.HibernateUtil;
 
@@ -25,27 +28,27 @@ public class ManagerController implements Initializable {
 
     //client
     @FXML
-    private TableColumn clientIdColumn;
+    private TableColumn<Client,String> clientIdColumn;
     @FXML
     private TextField clientName;
     @FXML
-    private TableColumn clientNameColumn;
+    private TableColumn<Client,String> clientNameColumn;
     @FXML
     private TextField clientSurname;
     @FXML
-    private TableColumn clientSurnameColumn;
+    private TableColumn<Client,String> clientSurnameColumn;
     @FXML
     private TextField clientPhone;
     @FXML
-    private TableColumn clientPhoneColumn;
+    private TableColumn<Client,String> clientPhoneColumn;
     @FXML
     private TextField clientPhone2;
     @FXML
-    private TableColumn clientPhone2Column;
+    private TableColumn<Client,String> clientPhone2Column;
     @FXML
     private TextField clientEmail;
     @FXML
-    private TableColumn clientEmailColumn;
+    private TableColumn<Client,String> clientEmailColumn;
     @FXML
     private Button clientAddButton;
     @FXML
@@ -55,25 +58,25 @@ public class ManagerController implements Initializable {
     @FXML
     private TextField clientAdress;
     @FXML
-    private TableColumn clientAdressColumn;
+    private TableColumn<Client,String> clientAdressColumn;
     @FXML
     private TableView clientTable;
 
     //request
     @FXML
-    private TableColumn requestIdColumn;
+    private TableColumn<Request,String> requestIdColumn;
     @FXML
-    private TableColumn requestClientIdColumn;
+    private TableColumn<Request,String> requestClientIdColumn;
     @FXML
-    private TableColumn requestColumn;
+    private TableColumn<Request,String> requestColumn;
     @FXML
     private TableColumn requestCheckedColumn;
     @FXML
     private TableColumn requestApprovedColumn;
     @FXML
-    private TableColumn requestProductColumn;
+    private TableColumn<RequestProduct,String> requestProductColumn;
     @FXML
-    private TableColumn requestCountColumn;
+    private TableColumn<RequestProduct,String> requestCountColumn;
     @FXML
     private TableView requestTable;
     @FXML
@@ -81,21 +84,21 @@ public class ManagerController implements Initializable {
 
     //order
     @FXML
-    private TableColumn orderIdColumn;
+    private TableColumn<Order,String> orderIdColumn;
     @FXML
-    private TableColumn orderClientColumn;
+    private TableColumn<Order,String> orderClientColumn;
     @FXML
-    private TableColumn orderRequestColumn;
+    private TableColumn<Order,String> orderRequestColumn;
     @FXML
-    private TableColumn orderContractColumn;
+    private TableColumn<Order,String> orderContractColumn;
     @FXML
     private TableColumn orderPaymentColumn;
     @FXML
-    private TableColumn orderProductColumn;
+    private TableColumn<OrderProduct,String> orderProductColumn;
     @FXML
-    private TableColumn orderCountColumn;
+    private TableColumn<OrderProduct,String> orderCountColumn;
     @FXML
-    private TableColumn orderRestColumn;
+    private TableColumn<OrderProduct,String> orderRestColumn;
     @FXML
     private TableView orderTable;
     @FXML
@@ -103,13 +106,13 @@ public class ManagerController implements Initializable {
 
     //contract
     @FXML
-    private TableColumn contractNameColumn;
+    private TableColumn<Order,String> contractNameColumn;
     @FXML
-    private TableColumn contractClientNameColumn;
+    private TableColumn<Order,String> contractClientNameColumn;
     @FXML
-    private TableColumn contractBeginDateColumn;
+    private TableColumn<Order,String> contractBeginDateColumn;
     @FXML
-    private TableColumn contractEndDateColumn;
+    private TableColumn<Order,String> contractEndDateColumn;
     @FXML
     private TableColumn contractPaymentColumn;
     @FXML
@@ -117,17 +120,17 @@ public class ManagerController implements Initializable {
 
     //invoice
     @FXML
-    private TableColumn invoiceIdColumn;
+    private TableColumn<Invoice,String> invoiceIdColumn;
     @FXML
-    private TableColumn invoiceContractColumn;
+    private TableColumn<Invoice,String> invoiceContractColumn;
     @FXML
-    private TableColumn invoiceDateCreateColumn;
+    private TableColumn<Invoice,String> invoiceDateCreateColumn;
     @FXML
     private TableColumn invoiceAgreedColumn;
     @FXML
-    private TableColumn invoiceProductNameColumn;
+    private TableColumn<InvoiceProduct,String> invoiceProductNameColumn;
     @FXML
-    private TableColumn invoiceProductCountColumn;
+    private TableColumn<InvoiceProduct,String> invoiceProductCountColumn;
     @FXML
     private TableColumn invoiceProductLoadedColumn;
     @FXML
@@ -136,7 +139,7 @@ public class ManagerController implements Initializable {
     private TableView invoiceProductTable;
 
     private String login;
-    private final Session session = HibernateUtil.getSessionFactory();
+    private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
     public ManagerController()  {
     }
@@ -144,6 +147,8 @@ public class ManagerController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.setFactories();
+        this.setOnEditCommit();
+
         this.setAllClients();
         this.setAllRequests();
         this.setAllOrders();
@@ -153,6 +158,7 @@ public class ManagerController implements Initializable {
     private void setAllClients(){
         ObservableList<Client> usersList = FXCollections.observableArrayList();
         this.setFactories();
+        Session session = sessionFactory.openSession();
         Query query1 = session.createQuery(" FROM ClientEntity ");
         Iterator iter = query1.list().iterator();
         while(iter.hasNext()){
@@ -160,10 +166,12 @@ public class ManagerController implements Initializable {
             usersList.add(new Client(clientEntity));
         }
         clientTable.setItems(usersList);
+        session.close();
     }
     private void setAllRequests(){
         ObservableList<Request> requestsList = FXCollections.observableArrayList();
 
+        Session session = sessionFactory.openSession();
         Query query = session.createQuery(" FROM ClientRequestEntity ");
         Iterator iter = query.list().iterator();
         while(iter.hasNext()){
@@ -182,10 +190,12 @@ public class ManagerController implements Initializable {
             requestsList.add(request);
         }
         requestTable.setItems(requestsList);
+        session.close();
     }
     private void setAllOrders(){
         ObservableList<Order> ordersList = FXCollections.observableArrayList();
 
+        Session session = sessionFactory.openSession();
         Query query = session.createQuery(" FROM ClientOrderEntity ");
         Iterator iter = query.list().iterator();
         while(iter.hasNext()){
@@ -205,10 +215,12 @@ public class ManagerController implements Initializable {
         }
         orderTable.setItems(ordersList);
         contractTable.setItems(ordersList);
+        session.close();
     }
     private void setAllInvoices(){
         ObservableList<Invoice> invoicesList = FXCollections.observableArrayList();
 
+        Session session = sessionFactory.openSession();
         Query query = session.createQuery(" FROM InvoiceEntity ");
         Iterator iter = query.list().iterator();
         while(iter.hasNext()){
@@ -227,6 +239,7 @@ public class ManagerController implements Initializable {
             invoicesList.add(invoice);
         }
         invoiceTable.setItems(invoicesList);
+        session.close();
     }
 
     public void onRequestTableClick(){
@@ -377,6 +390,318 @@ public class ManagerController implements Initializable {
                 CheckBoxTableCell cell = new CheckBoxTableCell();
                 cell.setAlignment(Pos.CENTER);
                 return cell;
+            }
+        });
+    }
+    private void setOnEditCommit(){
+        clientIdColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        clientIdColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Client, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Client, String> t) {
+                ((Client) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setId(t.getNewValue());
+            }
+        });
+        clientNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        clientNameColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Client, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Client, String> t) {
+                ((Client) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setName(t.getNewValue());
+            }
+        });
+        clientSurnameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        clientSurnameColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Client, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Client, String> t) {
+                ((Client) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setSurname(t.getNewValue());
+            }
+        });
+        clientPhoneColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        clientPhoneColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Client, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Client, String> t) {
+                ((Client) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setPhone(t.getNewValue());
+            }
+        });
+        clientPhone2Column.setCellFactory(TextFieldTableCell.forTableColumn());
+        clientPhone2Column.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Client, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Client, String> t) {
+                ((Client) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setPhone2(t.getNewValue());
+            }
+        });
+        clientAdressColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        clientAdressColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Client, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Client, String> t) {
+                ((Client) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setAdress(t.getNewValue());
+            }
+        });
+        clientEmailColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        clientEmailColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Client, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Client, String> t) {
+                ((Client) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setEmail(t.getNewValue());
+            }
+        });
+
+        requestIdColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        requestIdColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Request, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Request, String> t) {
+                ((Request) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setId(t.getNewValue());
+            }
+        });
+        requestClientIdColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        requestClientIdColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Request, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Request, String> t) {
+                ((Request) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setClientName(t.getNewValue());
+            }
+        });
+        requestColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        requestColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Request, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Request, String> t) {
+                ((Request) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setRequest(t.getNewValue());
+            }
+        });
+        requestCheckedColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        requestCheckedColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Request, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Request, String> t) {
+                ((Request) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setChecked(Boolean.getBoolean(t.getNewValue()));
+            }
+        });
+        requestApprovedColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        requestApprovedColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Request, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Request, String> t) {
+                ((Request) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setApproved(Boolean.getBoolean(t.getNewValue()));
+            }
+        });
+        requestProductColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        requestProductColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<RequestProduct, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<RequestProduct, String> t) {
+                ((RequestProduct) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setProductName(t.getNewValue());
+            }
+        });
+        requestCountColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        requestCountColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<RequestProduct, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<RequestProduct, String> t) {
+                ((RequestProduct) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setCount(t.getNewValue());
+            }
+        });
+
+        orderIdColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        orderIdColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Order, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Order, String> t) {
+                ((Order) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setId(t.getNewValue());
+            }
+        });
+        orderClientColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        orderClientColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Order, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Order, String> t) {
+                ((Order) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setClientName(t.getNewValue());
+            }
+        });
+        orderRequestColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        orderRequestColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Order, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Order, String> t) {
+                ((Order) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setRequestName(t.getNewValue());
+            }
+        });
+        orderContractColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        orderContractColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Order, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Order, String> t) {
+                ((Order) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setContractName(t.getNewValue());
+            }
+        });
+        orderPaymentColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        orderPaymentColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Order, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Order, String> t) {
+                ((Order) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setPayment(Boolean.getBoolean(t.getNewValue()));
+            }
+        });
+        orderProductColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        orderProductColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<OrderProduct, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<OrderProduct, String> t) {
+                ((OrderProduct) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setProductName(t.getNewValue());
+            }
+        });
+        orderCountColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        orderCountColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<OrderProduct, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<OrderProduct, String> t) {
+                ((OrderProduct) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setCount(t.getNewValue());
+            }
+        });
+        orderRestColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        orderRestColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<OrderProduct, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<OrderProduct, String> t) {
+                ((OrderProduct) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setRest(t.getNewValue());
+            }
+        });
+
+        contractNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        contractNameColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Order, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Order, String> t) {
+                ((Order) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setContractName(t.getNewValue());
+            }
+        });
+        contractClientNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        contractClientNameColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Order, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Order, String> t) {
+                ((Order) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setClientName(t.getNewValue());
+            }
+        });
+        contractBeginDateColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        contractBeginDateColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Order, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Order, String> t) {
+                ((Order) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setBeginDate(t.getNewValue());
+            }
+        });
+        contractEndDateColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        contractEndDateColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Order, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Order, String> t) {
+                ((Order) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setEndDate(t.getNewValue());
+            }
+        });
+        contractPaymentColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        contractPaymentColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Order, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Order, String> t) {
+                ((Order) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setPayment(Boolean.getBoolean(t.getNewValue()));
+            }
+        });
+
+        invoiceIdColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        invoiceIdColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Invoice, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Invoice, String> t) {
+                ((Invoice) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setId(t.getNewValue());
+            }
+        });
+        invoiceContractColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        invoiceContractColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Invoice, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Invoice, String> t) {
+                ((Invoice) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setId(t.getNewValue());
+            }
+        });
+        invoiceDateCreateColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        invoiceDateCreateColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Invoice, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Invoice, String> t) {
+                ((Invoice) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setDateCreate(t.getNewValue());
+            }
+        });
+        invoiceAgreedColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        invoiceAgreedColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Invoice, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Invoice, String> t) {
+                ((Invoice) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setAgreed(Boolean.getBoolean(t.getNewValue()));
+            }
+        });
+        invoiceProductNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        invoiceProductNameColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<InvoiceProduct, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<InvoiceProduct, String> t) {
+                ((InvoiceProduct) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setProductName(t.getNewValue());
+            }
+        });
+        invoiceProductCountColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        invoiceProductCountColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<InvoiceProduct, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<InvoiceProduct, String> t) {
+                ((InvoiceProduct) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setCount(t.getNewValue());
+            }
+        });
+        invoiceProductLoadedColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        invoiceProductLoadedColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<InvoiceProduct, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<InvoiceProduct, String> t) {
+                ((InvoiceProduct) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setLoaded(Boolean.getBoolean(t.getNewValue()));
             }
         });
     }

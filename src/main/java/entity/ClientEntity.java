@@ -15,6 +15,19 @@ public class ClientEntity {
     private String adress;
     private String email;
 
+    public ClientEntity() {
+    }
+
+    public ClientEntity(SimpleStringProperty id, SimpleStringProperty name, SimpleStringProperty surname, SimpleStringProperty phone, SimpleStringProperty phone2, SimpleStringProperty adress, SimpleStringProperty email) {
+        this.id = Integer.valueOf(id.get());
+        this.name = name.get();
+        this.surname = surname.get();
+        this.phone = phone.get();
+        this.phone2 = phone2.get();
+        this.adress = adress.get();
+        this.email = email.get();
+    }
+
     @Id
     @Column(name = "id", nullable = false)
     public int getId() {
