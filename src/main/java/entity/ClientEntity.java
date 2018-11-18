@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "client", schema = "cosmos", catalog = "")
+@Table(name = "client", schema = "cosmos")
 public class ClientEntity {
     private int id;
     private String name;
@@ -16,6 +16,10 @@ public class ClientEntity {
     private String email;
 
     public ClientEntity() {
+    }
+
+    public ClientEntity(String id) {
+        this.id = Integer.valueOf(id);
     }
 
     public ClientEntity(SimpleStringProperty id, SimpleStringProperty name, SimpleStringProperty surname, SimpleStringProperty phone, SimpleStringProperty phone2, SimpleStringProperty adress, SimpleStringProperty email) {
@@ -41,6 +45,7 @@ public class ClientEntity {
     @Basic
     @Column(name = "name", nullable = true, length = 50)
     public String getName() {
+        if(name==null) return "";
         return name;
     }
 
@@ -51,6 +56,7 @@ public class ClientEntity {
     @Basic
     @Column(name = "surname", nullable = true, length = 50)
     public String getSurname() {
+        if(surname==null) return "";
         return surname;
     }
 
@@ -61,6 +67,7 @@ public class ClientEntity {
     @Basic
     @Column(name = "phone", nullable = true, length = 12)
     public String getPhone() {
+        if(phone==null) return "";
         return phone;
     }
 
@@ -71,6 +78,7 @@ public class ClientEntity {
     @Basic
     @Column(name = "phone2", nullable = true, length = 12)
     public String getPhone2() {
+        if(phone2==null) return "";
         return phone2;
     }
 
@@ -81,6 +89,7 @@ public class ClientEntity {
     @Basic
     @Column(name = "adress", nullable = true, length = 200)
     public String getAdress() {
+        if(adress==null) return "";
         return adress;
     }
 
@@ -91,6 +100,7 @@ public class ClientEntity {
     @Basic
     @Column(name = "email", nullable = true, length = 50)
     public String getEmail() {
+        if(email==null) return "";
         return email;
     }
 

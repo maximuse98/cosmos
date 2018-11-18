@@ -1,15 +1,45 @@
 package entity;
 
+import javafx.beans.property.SimpleStringProperty;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
+import util.HibernateUtil;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "order_product", schema = "cosmos", catalog = "")
+@Table(name = "order_product", schema = "cosmos")
 public class OrderProductEntity {
     private int id;
     private Integer count;
     private Integer rest;
     private ClientOrderEntity clientOrderByOrderId;
     private ProductEntity productByProductId;
+
+    private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+
+    public OrderProductEntity() {
+    }
+
+    public OrderProductEntity(String id) {
+        this.id = Integer.valueOf(id);
+    }
+
+    public OrderProductEntity(SimpleStringProperty id, SimpleStringProperty count, SimpleStringProperty rest, SimpleStringProperty productName) {
+        this.id = Integer.valueOf(id.get());
+        this.count = Integer.valueOf(count.get());
+        this.rest = Integer.valueOf(rest.get());
+
+        String hql = " FROM ProductEntity " +
+                " WHERE name LIKE '"+ productName.get()+"'";
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery(hql);
+        ProductEntity result = (ProductEntity) query.list().get(0);
+        session.close();
+
+        this.productByProductId = result;
+    }
 
     @Id
     @Column(name = "id", nullable = false)

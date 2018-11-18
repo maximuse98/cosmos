@@ -1,15 +1,50 @@
 package entity;
 
+import javafx.beans.property.SimpleStringProperty;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
+import util.HibernateUtil;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "client_request", schema = "cosmos", catalog = "")
+@Table(name = "client_request", schema = "cosmos")
 public class ClientRequestEntity {
     private int id;
     private String request;
     private Byte checked;
     private Byte approved;
     private ClientEntity clientByClientId;
+
+    private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+
+    public ClientRequestEntity() {
+    }
+
+    public ClientRequestEntity(String id) {
+        this.id = Integer.valueOf(id);
+    }
+
+    public ClientRequestEntity(SimpleStringProperty id, SimpleStringProperty request, Boolean checked, Boolean approved, SimpleStringProperty clientName) {
+        this.id = Integer.valueOf(id.get());
+        this.request = request.get();
+        this.checked = new Byte(String.valueOf(checked? 1:0));
+        this.approved = new Byte(String.valueOf(approved? 1:0));
+
+        String client = clientName.get();
+        String name = client.substring(0, client.indexOf(' '));
+        String surname = client.substring(client.indexOf(' ')+1, client.length());
+
+        String hql = "FROM ClientEntity" +
+                " WHERE name LIKE '"+ name +"' AND surname LIKE '"+surname+"'";
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery(hql);
+        ClientEntity result = (ClientEntity) query.list().get(0);
+        session.close();
+
+        this.clientByClientId = result;
+    }
 
     @Id
     @Column(name = "id", nullable = false)
@@ -24,6 +59,7 @@ public class ClientRequestEntity {
     @Basic
     @Column(name = "request", nullable = true, length = 200)
     public String getRequest() {
+        if(request==null) return "";
         return request;
     }
 
@@ -34,6 +70,7 @@ public class ClientRequestEntity {
     @Basic
     @Column(name = "checked", nullable = true)
     public Byte getChecked() {
+        if(checked == null) return 0;
         return checked;
     }
 
@@ -44,6 +81,7 @@ public class ClientRequestEntity {
     @Basic
     @Column(name = "approved", nullable = true)
     public Byte getApproved() {
+        if(approved == null) return 0;
         return approved;
     }
 

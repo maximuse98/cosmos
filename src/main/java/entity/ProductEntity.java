@@ -3,7 +3,7 @@ package entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "product", schema = "cosmos", catalog = "")
+@Table(name = "product", schema = "cosmos")
 public class ProductEntity {
     private int id;
     private String name;
@@ -24,6 +24,7 @@ public class ProductEntity {
     @Basic
     @Column(name = "name", nullable = true, length = 200)
     public String getName() {
+        if(name == null) return "";
         return name;
     }
 
@@ -34,6 +35,7 @@ public class ProductEntity {
     @Basic
     @Column(name = "category", nullable = false, length = 50)
     public String getCategory() {
+        if(category==null) return "";
         return category;
     }
 

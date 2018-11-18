@@ -1,16 +1,50 @@
 package entity;
 
+import javafx.beans.property.SimpleStringProperty;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
+import util.HibernateUtil;
+
 import javax.persistence.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
-@Table(name = "invoice", schema = "cosmos", catalog = "")
+@Table(name = "invoice", schema = "cosmos")
 public class InvoiceEntity {
     private int id;
     private Byte agreed;
     private Date dateCreate;
-
     private ClientOrderEntity clientOrderByOrderId;
+    private int order_id;
+
+    private SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-mm-dd");
+    private SimpleDateFormat dt2 = new SimpleDateFormat("dd.mm.yyyy");
+    private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+
+    public InvoiceEntity() {
+    }
+
+    public InvoiceEntity(String id) {
+        this.id = Integer.valueOf(id);
+    }
+
+    public InvoiceEntity(SimpleStringProperty id, Boolean agreed, SimpleStringProperty dateCreate, SimpleStringProperty contractName) throws ParseException {
+        this.id = Integer.valueOf(id.get());
+        this.agreed = new Byte(String.valueOf(agreed? 1:0));
+        this.dateCreate = dt1.parse(dt1.format(dt2.parse(dateCreate.get())));
+
+        String hql = "FROM ClientOrderEntity " +
+                    " WHERE contract LIKE '"+ contractName.get()+"'";
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery(hql);
+        ClientOrderEntity result = (ClientOrderEntity) query.list().get(0);
+        session.close();
+
+        this.clientOrderByOrderId = result;
+    }
 
     @Id
     @Column(name = "id", nullable = false)
@@ -25,6 +59,7 @@ public class InvoiceEntity {
     @Basic
     @Column(name = "agreed", nullable = true)
     public Byte getAgreed() {
+        if(agreed == null) return 0;
         return agreed;
     }
 

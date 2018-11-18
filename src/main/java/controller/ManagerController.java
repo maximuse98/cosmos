@@ -2,6 +2,7 @@ package controller;
 
 import entity.*;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,8 +21,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import util.HibernateUtil;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ManagerController implements Initializable {
@@ -30,33 +32,15 @@ public class ManagerController implements Initializable {
     @FXML
     private TableColumn<Client,String> clientIdColumn;
     @FXML
-    private TextField clientName;
-    @FXML
     private TableColumn<Client,String> clientNameColumn;
-    @FXML
-    private TextField clientSurname;
     @FXML
     private TableColumn<Client,String> clientSurnameColumn;
     @FXML
-    private TextField clientPhone;
-    @FXML
     private TableColumn<Client,String> clientPhoneColumn;
-    @FXML
-    private TextField clientPhone2;
     @FXML
     private TableColumn<Client,String> clientPhone2Column;
     @FXML
-    private TextField clientEmail;
-    @FXML
     private TableColumn<Client,String> clientEmailColumn;
-    @FXML
-    private Button clientAddButton;
-    @FXML
-    private Button clientRemoveButton;
-    @FXML
-    private Button clientChangeButton;
-    @FXML
-    private TextField clientAdress;
     @FXML
     private TableColumn<Client,String> clientAdressColumn;
     @FXML
@@ -182,8 +166,13 @@ public class ManagerController implements Initializable {
             ObservableList<RequestProduct> products = FXCollections.observableArrayList();
             while(iter2.hasNext()){
                 RequestProductEntity requestProduct =(RequestProductEntity) iter2.next();
-                Product product = new Product(requestProduct.getProductByProductId());
-                products.add(new RequestProduct(requestProduct,product.getName()));
+                if(requestProduct.getProductByProductId()!=null) {
+                    Product product = new Product(requestProduct.getProductByProductId());
+                    products.add(new RequestProduct(requestProduct, product.getName()));
+                }
+                else {
+                    products.add(new RequestProduct(requestProduct,""));
+                }
             }
             Request request = new Request(requestEntity);
             request.setRequestsProducts(products);
@@ -206,8 +195,13 @@ public class ManagerController implements Initializable {
             ObservableList<OrderProduct> products = FXCollections.observableArrayList();
             while(iter2.hasNext()){
                 OrderProductEntity orderProduct =(OrderProductEntity) iter2.next();
-                ProductEntity product = orderProduct.getProductByProductId();
-                products.add(new OrderProduct(orderProduct,product.getName()));
+                if(orderProduct.getProductByProductId()!=null) {
+                    ProductEntity product = orderProduct.getProductByProductId();
+                    products.add(new OrderProduct(orderProduct, product.getName()));
+                }
+                else {
+                    products.add(new OrderProduct(orderProduct,""));
+                }
             }
             Order order = new Order(orderEntity);
             order.setOrdersProducts(products);
@@ -231,8 +225,10 @@ public class ManagerController implements Initializable {
             ObservableList<InvoiceProduct> products = FXCollections.observableArrayList();
             while(iter2.hasNext()){
                 InvoiceProductEntity invoiceProduct =(InvoiceProductEntity) iter2.next();
-                ProductEntity product = invoiceProduct.getProductByProductId();
-                products.add(new InvoiceProduct(invoiceProduct,product.getName()));
+                if(invoiceProduct.getProductByProductId()!=null) {
+                    ProductEntity product = invoiceProduct.getProductByProductId();
+                    products.add(new InvoiceProduct(invoiceProduct, product.getName()));
+                }
             }
             Invoice invoice = new Invoice(invoiceEntity);
             invoice.setInvoiceProducts(products);
@@ -261,6 +257,247 @@ public class ManagerController implements Initializable {
         else{invoiceProductTable.setItems(null);}
     }
 
+    public void onClientAddClick(){
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(new ClientEntity());
+        session.getTransaction().commit();
+        session.close();
+
+        this.refreshClientTable();
+    }
+    public void onInvoiceAddClick(){
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(new InvoiceEntity());
+        session.getTransaction().commit();
+        session.close();
+
+        this.refreshInvoiceTable();
+    }
+    public void onInvoiceProductAddClick(){
+        Invoice selectedRequest = (Invoice) invoiceTable.getSelectionModel().getSelectedItem();
+
+        Session session1 = sessionFactory.openSession();
+        Query query = session1.createQuery(" FROM InvoiceEntity WHERE id="+selectedRequest.getId());
+        InvoiceEntity result = (InvoiceEntity) query.list().get(0);
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        InvoiceProductEntity invoiceProductEntity = new InvoiceProductEntity();
+        invoiceProductEntity.setInvoiceByInvoiceId(result);
+        session.save(invoiceProductEntity);
+        session.getTransaction().commit();
+        session.close();
+
+        this.refreshInvoiceTable();
+    }
+    public void onOrderAddClick(){
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(new ClientOrderEntity());
+        session.getTransaction().commit();
+        session.close();
+
+        this.refreshOrderTable();
+    }
+    public void onOrderProductAddClick(){
+        Order selectedOrder = (Order) orderTable.getSelectionModel().getSelectedItem();
+
+        Session session1 = sessionFactory.openSession();
+        Query query = session1.createQuery(" FROM ClientOrderEntity WHERE id="+selectedOrder.getId());
+        ClientOrderEntity result = (ClientOrderEntity) query.list().get(0);
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        OrderProductEntity orderProductEntity = new OrderProductEntity();
+        orderProductEntity.setClientOrderByOrderId(result);
+        session.save(orderProductEntity);
+        session.getTransaction().commit();
+        session.close();
+
+        this.refreshOrderTable();
+    }
+    public void onRequestAddClick(){
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(new ClientRequestEntity());
+        session.getTransaction().commit();
+        session.close();
+
+        this.refreshRequestTable();
+    }
+    public void onRequestProductAddClick(){
+        Request selectedRequest = (Request) requestTable.getSelectionModel().getSelectedItem();
+
+        Session session1 = sessionFactory.openSession();
+        Query query = session1.createQuery(" FROM ClientRequestEntity WHERE id="+selectedRequest.getId());
+        ClientRequestEntity result = (ClientRequestEntity) query.list().get(0);
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        RequestProductEntity orderProductEntity = new RequestProductEntity();
+        orderProductEntity.setClientRequestByRequestId(result);
+        session.save(orderProductEntity);
+        session.getTransaction().commit();
+        session.close();
+
+        this.refreshRequestTable();
+    }
+
+    public void onClientDeleteClick(){
+        Client selected = (Client) clientTable.getSelectionModel().getSelectedItem();
+
+        String hql1 = "FROM ClientRequestEntity";
+        Session session3 = sessionFactory.openSession();
+        Query query3 = session3.createQuery(hql1);
+        Iterator iterator2 = query3.list().iterator();
+        while(iterator2.hasNext()) {
+            ClientRequestEntity result = (ClientRequestEntity) iterator2.next();
+            if(result.getClientByClientId().getId() == Integer.valueOf(selected.getId())){
+                this.setAlert("Удалите все связанные заявки");
+                return;
+            }
+        }
+        session3.close();
+
+        String hql = "FROM ClientOrderEntity";
+        Session session2 = sessionFactory.openSession();
+        Query query2 = session2.createQuery(hql);
+        Iterator iterator1 = query2.list().iterator();
+        while(iterator1.hasNext()) {
+            ClientOrderEntity result = (ClientOrderEntity) iterator1.next();
+            if(result.getClientByClientId().getId() == Integer.valueOf(selected.getId())){
+                this.setAlert("Удалите все связанные заказы");
+                return;
+            }
+        }
+        session2.close();
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.delete(new ClientEntity(selected.getId()));
+        session.getTransaction().commit();
+        session.close();
+
+        this.refreshClientTable();
+    }
+    public void onRequestDeleteClick(){
+        Request selected = (Request) requestTable.getSelectionModel().getSelectedItem();
+        ObservableList<RequestProduct> requestsProducts = selected.getRequestsProducts();
+        Iterator<RequestProduct> iterator = requestsProducts.iterator();
+        while(iterator.hasNext()){
+            RequestProduct next = iterator.next();
+
+            Session session1 = sessionFactory.openSession();
+            session1.beginTransaction();
+            session1.delete(new RequestProductEntity(next.getId()));
+            session1.getTransaction().commit();
+            session1.close();
+        }
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.delete(new ClientRequestEntity(selected.getId()));
+        session.getTransaction().commit();
+        session.close();
+
+        this.refreshRequestTable();
+    }
+    public void onRequestProductDeleteClick(){
+        RequestProduct selected = (RequestProduct) requestProductTable.getSelectionModel().getSelectedItem();
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.delete(new RequestProductEntity(selected.getId()));
+        session.getTransaction().commit();
+        session.close();
+
+        this.refreshRequestTable();
+    }
+    public void onOrderDeleteClick(){
+        Order selected = (Order) orderTable.getSelectionModel().getSelectedItem();
+
+        String hql = "FROM InvoiceEntity";
+        Session session2 = sessionFactory.openSession();
+        Query query2 = session2.createQuery(hql);
+        Iterator iterator1 = query2.list().iterator();
+        while(iterator1.hasNext()) {
+            InvoiceEntity result = (InvoiceEntity) iterator1.next();
+            if(result.getClientOrderByOrderId().getId() == Integer.valueOf(selected.getId())){
+                this.setAlert("Удалите все связанные счета-фактуры");
+                return;
+            }
+        }
+        session2.close();
+
+        ObservableList<OrderProduct> orderProducts = selected.getOrdersProducts();
+        Iterator<OrderProduct> iterator = orderProducts.iterator();
+        while(iterator.hasNext()){
+            OrderProduct next = iterator.next();
+
+            Session session1 = sessionFactory.openSession();
+            session1.beginTransaction();
+            session1.delete(new OrderProductEntity(next.getId()));
+            session1.getTransaction().commit();
+            session1.close();
+        }
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.delete(new ClientOrderEntity(selected.getId()));
+        session.getTransaction().commit();
+        session.close();
+
+        this.refreshOrderTable();
+        this.refreshContractTable();
+    }
+    public void onOrderProductDeleteClick(){
+        OrderProduct selected = (OrderProduct) orderProductTable.getSelectionModel().getSelectedItem();
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.delete(new OrderProductEntity(selected.getId()));
+        session.getTransaction().commit();
+        session.close();
+
+        this.refreshOrderTable();
+    }
+    public void onInvoiceDeleteClick(){
+        Invoice selected = (Invoice) invoiceTable.getSelectionModel().getSelectedItem();
+
+        ObservableList<InvoiceProduct> invoiceProducts = selected.getInvoiceProducts();
+        Iterator<InvoiceProduct> iterator = invoiceProducts.iterator();
+        while(iterator.hasNext()){
+            InvoiceProduct next = iterator.next();
+
+            Session session1 = sessionFactory.openSession();
+            session1.beginTransaction();
+            session1.delete(new InvoiceProductEntity(next.getId()));
+            session1.getTransaction().commit();
+            session1.close();
+        }
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.delete(new InvoiceEntity(selected.getId()));
+        session.getTransaction().commit();
+        session.close();
+
+        this.refreshInvoiceTable();
+    }
+    public void onInvoiceProductDeleteClick(){
+        InvoiceProduct selected = (InvoiceProduct) invoiceProductTable.getSelectionModel().getSelectedItem();
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.delete(new InvoiceProductEntity(selected.getId()));
+        session.getTransaction().commit();
+        session.close();
+
+        this.refreshInvoiceTable();
+    }
+
     private void setFactories() {
         clientIdColumn.setCellValueFactory(new PropertyValueFactory<Client,String>("id"));
         clientNameColumn.setCellValueFactory(new PropertyValueFactory<Client,String>("name"));
@@ -277,7 +514,12 @@ public class ManagerController implements Initializable {
             @Override
             public ObservableValue call(TableColumn.CellDataFeatures param) {
                 Request request = (Request) param.getValue();
-                SimpleBooleanProperty p = new SimpleBooleanProperty(request.getChecked());
+                SimpleBooleanProperty p = new SimpleBooleanProperty(request.getApproved());
+                p.addListener(new ChangeListener<Boolean>() {
+                    public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
+                        request.setChecked(new_val);
+                    }
+                });
                 return p;
             }
         });
@@ -294,6 +536,11 @@ public class ManagerController implements Initializable {
             public ObservableValue call(TableColumn.CellDataFeatures param) {
                 Request request = (Request) param.getValue();
                 SimpleBooleanProperty p = new SimpleBooleanProperty(request.getApproved());
+                p.addListener(new ChangeListener<Boolean>() {
+                    public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
+                        request.setApproved(new_val);
+                    }
+                });
                 return p;
             }
         });
@@ -318,6 +565,12 @@ public class ManagerController implements Initializable {
             public ObservableValue call(TableColumn.CellDataFeatures param) {
                 Order order = (Order) param.getValue();
                 SimpleBooleanProperty p = new SimpleBooleanProperty(order.getPayment());
+                p.addListener(new ChangeListener<Boolean>() {
+                    public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
+                        order.setPayment(new_val);
+                        refreshContractTable();
+                    }
+                });
                 return p;
             }
         });
@@ -342,6 +595,12 @@ public class ManagerController implements Initializable {
             public ObservableValue call(TableColumn.CellDataFeatures param) {
                 Order order = (Order) param.getValue();
                 SimpleBooleanProperty p = new SimpleBooleanProperty(order.getPayment());
+                p.addListener(new ChangeListener<Boolean>() {
+                    public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
+                        order.setPayment(new_val);
+                        refreshOrderTable();
+                    }
+                });
                 return p;
             }
         });
@@ -362,6 +621,11 @@ public class ManagerController implements Initializable {
             public ObservableValue call(TableColumn.CellDataFeatures param) {
                 Invoice invoice = (Invoice) param.getValue();
                 SimpleBooleanProperty p = new SimpleBooleanProperty(invoice.getAgreed());
+                p.addListener(new ChangeListener<Boolean>() {
+                    public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
+                        invoice.setAgreed(new_val);
+                    }
+                });
                 return p;
             }
         });
@@ -381,6 +645,11 @@ public class ManagerController implements Initializable {
             public ObservableValue call(TableColumn.CellDataFeatures param) {
                 InvoiceProduct invoice = (InvoiceProduct) param.getValue();
                 SimpleBooleanProperty p = new SimpleBooleanProperty(invoice.getLoaded());
+                p.addListener(new ChangeListener<Boolean>() {
+                    public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
+                        invoice.setLoaded(new_val);
+                    }
+                });
                 return p;
             }
         });
@@ -485,7 +754,6 @@ public class ManagerController implements Initializable {
                 ).setRequest(t.getNewValue());
             }
         });
-        requestCheckedColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         requestCheckedColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Request, String>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Request, String> t) {
@@ -656,7 +924,7 @@ public class ManagerController implements Initializable {
             public void handle(TableColumn.CellEditEvent<Invoice, String> t) {
                 ((Invoice) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
-                ).setId(t.getNewValue());
+                ).setContractName(t.getNewValue());
             }
         });
         invoiceDateCreateColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -706,7 +974,48 @@ public class ManagerController implements Initializable {
         });
     }
 
+    private void refreshClientTable(){
+        clientTable.getItems().clear();
+        this.setAllClients();
+    }
+    private void refreshRequestTable(){
+        requestTable.getItems().clear();
+        try {
+            requestProductTable.getItems().clear();
+        }catch (NullPointerException e){}
+        this.setAllRequests();
+    }
+    private void refreshOrderTable(){
+        orderTable.getItems().clear();
+        try {
+            orderProductTable.getItems().clear();
+        }catch (NullPointerException e){}
+        this.setAllOrders();
+    }
+    private void refreshInvoiceTable(){
+        invoiceTable.getItems().clear();
+        try {
+            invoiceProductTable.getItems().clear();
+        }catch (NullPointerException e){}
+        this.setAllInvoices();
+    }
+    private void refreshContractTable(){
+        orderTable.getItems().clear();
+        contractTable.getItems().clear();
+        this.setAllOrders();
+    }
+
     public void setLogin(String login) {
         this.login = login;
+    }
+    private void setAlert(String reason){
+        Exception e = new Exception(reason);
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText("Удаление невозможно");
+        alert.getDialogPane().setExpandableContent(new ScrollPane(new TextArea(sw.toString())));
+        alert.showAndWait();
     }
 }

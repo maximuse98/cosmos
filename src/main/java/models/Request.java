@@ -2,8 +2,12 @@ package models;
 
 import entity.ClientEntity;
 import entity.ClientRequestEntity;
+import entity.InvoiceProductEntity;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import util.HibernateUtil;
 
 import java.util.List;
 
@@ -14,6 +18,8 @@ public class Request {
     private Boolean checked;
     private Boolean approved;
 
+    private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+
     private ClientEntity client;
     private ObservableList<RequestProduct> requestsProducts;
 
@@ -23,7 +29,7 @@ public class Request {
         this.request = new SimpleStringProperty(clientRequest.getRequest());
         this.checked = clientRequest.getChecked() != 0;
         this.approved = clientRequest.getApproved() != 0;
-        this.clientName = new SimpleStringProperty(client.getName()+" "+client.getSurname());
+        this.clientName = createClientName();
     }
 
     public String getId() {
@@ -35,7 +41,13 @@ public class Request {
     }
 
     public void setId(String id) {
+        String s = this.getId();
         this.id.set(id);
+        try {
+            this.updateEntity();
+        }catch (Exception e){
+            this.id.set(s);
+        }
     }
 
     public String getClientName() {
@@ -47,7 +59,13 @@ public class Request {
     }
 
     public void setClientName(String clientName) {
+        String s = this.getClientName();
         this.clientName.set(clientName);
+        try {
+            this.updateEntity();
+        }catch (Exception e){
+            this.clientName.set(s);
+        }
     }
 
     public String getRequest() {
@@ -59,7 +77,13 @@ public class Request {
     }
 
     public void setRequest(String request) {
+        String s = this.getRequest();
         this.request.set(request);
+        try {
+            this.updateEntity();
+        }catch (Exception e){
+            this.request.set(s);
+        }
     }
 
     public Boolean getChecked() {
@@ -67,7 +91,13 @@ public class Request {
     }
 
     public void setChecked(Boolean checked) {
+        Boolean s = this.getChecked();
         this.checked = checked;
+        try {
+            this.updateEntity();
+        }catch (Exception e){
+            this.checked = s;
+        }
     }
 
     public Boolean getApproved() {
@@ -75,7 +105,13 @@ public class Request {
     }
 
     public void setApproved(Boolean approved) {
+        Boolean s = this.getApproved();
         this.approved = approved;
+        try {
+            this.updateEntity();
+        }catch (Exception e){
+            this.approved = s;
+        }
     }
 
     public ClientEntity getClient() {
@@ -92,5 +128,21 @@ public class Request {
 
     public void setRequestsProducts(ObservableList<RequestProduct> requestsProducts) {
         this.requestsProducts = requestsProducts;
+    }
+
+    private void updateEntity(){
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.update(new ClientRequestEntity(id,request,checked,approved,clientName));
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    private SimpleStringProperty createClientName(){
+        try{
+            return new SimpleStringProperty(client.getName()+" "+client.getSurname());
+        }catch (NullPointerException e){
+            return new SimpleStringProperty("");
+        }
     }
 }

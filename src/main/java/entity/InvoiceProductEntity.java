@@ -1,15 +1,46 @@
 package entity;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
+import util.HibernateUtil;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "invoice_product", schema = "cosmos", catalog = "")
+@Table(name = "invoice_product", schema = "cosmos")
 public class InvoiceProductEntity {
     private int id;
     private Integer count;
     private Byte loaded;
     private InvoiceEntity invoiceByInvoiceId;
     private ProductEntity productByProductId;
+
+    private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+
+    public InvoiceProductEntity() {
+    }
+
+    public InvoiceProductEntity(String id) {
+        this.id = Integer.valueOf(id);
+    }
+
+    public InvoiceProductEntity(SimpleStringProperty id, SimpleStringProperty productName, SimpleStringProperty count, Boolean loaded) {
+        this.id = Integer.valueOf(id.get());
+        this.count = Integer.valueOf(count.get());
+        this.loaded = new Byte(String.valueOf(loaded? 1:0));
+
+        String hql = " FROM ProductEntity " +
+                     " WHERE name LIKE '"+ productName.get()+"'";
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery(hql);
+        ProductEntity result = (ProductEntity) query.list().get(0);
+        session.close();
+
+        this.productByProductId = result;
+    }
 
     @Id
     @Column(name = "id", nullable = false)
@@ -34,6 +65,7 @@ public class InvoiceProductEntity {
     @Basic
     @Column(name = "loaded", nullable = true)
     public Byte getLoaded() {
+        if(loaded == null) return 0;
         return loaded;
     }
 

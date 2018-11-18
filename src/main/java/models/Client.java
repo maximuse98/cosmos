@@ -86,50 +86,83 @@ public class Client {
     }
 
     public void setId(String id) {
+        String s = this.getId();
         this.id.set(id);
-        this.updateEntity();
+        try {
+            this.updateEntity();
+        }catch (Exception e){
+            this.id.set(s);
+        }
     }
 
     public void setName(String name) {
+        String s = this.getName();
         this.name.set(name);
-        this.updateEntity();
+        try {
+            this.updateEntity();
+        }catch (Exception e){
+            this.name.set(s);
+        }
     }
 
     public void setSurname(String surname) {
+        String s = this.getSurname();
         this.surname.set(surname);
-        this.updateEntity();
+        try {
+            this.updateEntity();
+        }catch (Exception e){
+            this.surname.set(s);
+        }
     }
 
     public void setPhone(String phone) {
+        String s = this.getPhone();
         this.phone.set(phone);
-        this.updateEntity();
+        try {
+            this.updateEntity();
+        }catch (Exception e){
+            this.phone.set(s);
+        }
     }
 
     public void setPhone2(String phone2) {
+        String s = this.getPhone2();
         this.phone2.set(phone2);
         this.updateEntity();
+        try {
+            this.updateEntity();
+        }catch (Exception e){
+            this.phone2.set(s);
+        }
     }
 
     public void setAdress(String adress) {
+        String s = getAdress();
         this.adress.set(adress);
         this.updateEntity();
+        try {
+            this.updateEntity();
+        }catch (Exception e){
+            this.adress.set(s);
+        }
     }
 
     public void setEmail(String email) {
+        String s = getEmail();
         this.email.set(email);
         this.updateEntity();
+        try {
+            this.updateEntity();
+        }catch (Exception e){
+            this.email.set(s);
+        }
     }
 
     private void updateEntity(){
-        try {
-            Session session = sessionFactory.openSession();
-            session.beginTransaction();
-            session.update(new ClientEntity(id,name,surname,phone,phone2,adress,email));
-            session.getTransaction().commit();
-            session.close();
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.update(new ClientEntity(id,name,surname,phone,phone2,adress,email));
+        session.getTransaction().commit();
+        session.close();
     }
 }

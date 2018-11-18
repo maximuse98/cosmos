@@ -3,11 +3,13 @@ package entity;
 import javax.persistence.*;
 import java.sql.Date;
 
-
-//возможно использоваться не будет!!!!
-//все данные этой таблицы перенесены в ClientOrderEntity
-//@Entity
-//@Table(name = "contract", schema = "cosmos", catalog = "")
+/**
+    //возможно использоваться не будет!!!!
+    //все данные этой таблицы перенесены в ClientOrderEntity
+    //@Entity
+    //@Table(name = "contract", schema = "cosmos", catalog = "")
+**/
+@Deprecated
 public class ContractEntity {
     private int id;
     private String contract;

@@ -1,7 +1,11 @@
 package models;
 
+import entity.InvoiceProductEntity;
 import entity.OrderProductEntity;
 import javafx.beans.property.SimpleStringProperty;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import util.HibernateUtil;
 
 public class OrderProduct {
     private SimpleStringProperty id;
@@ -9,11 +13,13 @@ public class OrderProduct {
     private SimpleStringProperty count;
     private SimpleStringProperty rest;
 
+    private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+
     public OrderProduct(OrderProductEntity orderProduct, String productName) {
         this.id = new SimpleStringProperty(Integer.toString(orderProduct.getId()));
         this.productName = new SimpleStringProperty(productName);
-        this.count = new SimpleStringProperty(Integer.toString(orderProduct.getCount()));
-        this.rest = new SimpleStringProperty(Integer.toString(orderProduct.getRest()));
+        this.count = createCount(orderProduct.getCount());
+        this.rest = createCount(orderProduct.getRest());
     }
 
     public String getId() {
@@ -25,7 +31,14 @@ public class OrderProduct {
     }
 
     public void setId(String id) {
+        String s = this.getId();
         this.id.set(id);
+        try {
+            this.updateEntity();
+        }
+        catch (Exception e){
+            this.id.set(s);
+        }
     }
 
     public String getProductName() {
@@ -37,7 +50,14 @@ public class OrderProduct {
     }
 
     public void setProductName(String productName) {
+        String s = this.getProductName();
         this.productName.set(productName);
+        try {
+            this.updateEntity();
+        }
+        catch (Exception e){
+            this.productName.set(s);
+        }
     }
 
     public String getCount() {
@@ -49,7 +69,14 @@ public class OrderProduct {
     }
 
     public void setCount(String count) {
+        String s = this.getCount();
         this.count.set(count);
+        try {
+            this.updateEntity();
+        }
+        catch (Exception e){
+            this.count.set(s);
+        }
     }
 
     public String getRest() {
@@ -61,6 +88,29 @@ public class OrderProduct {
     }
 
     public void setRest(String rest) {
+        String s = this.getRest();
         this.rest.set(rest);
+        try {
+            this.updateEntity();
+        }
+        catch (Exception e){
+            this.rest.set(s);
+        }
+    }
+
+    private void updateEntity(){
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.update(new OrderProductEntity(id,count,rest,productName));
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    private SimpleStringProperty createCount(Integer count){
+        try {
+            return new SimpleStringProperty(Integer.toString(count));
+        }catch (NullPointerException e){
+            return new SimpleStringProperty("");
+        }
     }
 }

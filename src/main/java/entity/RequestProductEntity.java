@@ -1,14 +1,43 @@
 package entity;
 
+import javafx.beans.property.SimpleStringProperty;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
+import util.HibernateUtil;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "request_product", schema = "cosmos", catalog = "")
+@Table(name = "request_product", schema = "cosmos")
 public class RequestProductEntity {
     private int id;
     private Integer count;
     private ClientRequestEntity clientRequestByRequestId;
     private ProductEntity productByProductId;
+
+    private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+
+    public RequestProductEntity() {
+    }
+
+    public RequestProductEntity(String id) {
+        this.id = Integer.valueOf(id);
+    }
+
+    public RequestProductEntity(SimpleStringProperty id, SimpleStringProperty count, SimpleStringProperty productName) {
+        this.id = Integer.valueOf(id.get());
+        this.count = Integer.valueOf(count.get());
+
+        String hql = " FROM ProductEntity " +
+                " WHERE name LIKE '"+ productName.get()+"'";
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery(hql);
+        ProductEntity result = (ProductEntity) query.list().get(0);
+        session.close();
+
+        this.productByProductId = result;
+    }
 
     @Id
     @Column(name = "id", nullable = false)
@@ -23,6 +52,7 @@ public class RequestProductEntity {
     @Basic
     @Column(name = "count", nullable = true)
     public Integer getCount() {
+        if (count == null) return 0;
         return count;
     }
 

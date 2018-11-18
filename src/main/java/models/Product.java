@@ -14,8 +14,8 @@ public class Product {
         this.id = new SimpleStringProperty(Integer.toString(product.getId()));
         this.name = new SimpleStringProperty(product.getName());
         this.category = new SimpleStringProperty(product.getCategory());
-        this.price = new SimpleStringProperty(Integer.toString(product.getPrice()));
-        this.count = new SimpleStringProperty(Integer.toString(product.getCount()));
+        this.price = createCount(product.getPrice());
+        this.count = createCount(product.getCount());
     }
 
     public String getId() {
@@ -76,5 +76,13 @@ public class Product {
 
     public void setCount(String count) {
         this.count.set(count);
+    }
+
+    private SimpleStringProperty createCount(Integer count){
+        try {
+            return new SimpleStringProperty(Integer.toString(count));
+        }catch (NullPointerException e){
+            return new SimpleStringProperty("");
+        }
     }
 }
