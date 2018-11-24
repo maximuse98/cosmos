@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
@@ -63,10 +64,10 @@ public class LoginController{
         String result = (String) query.getSingleResult();
         session.close();
 
-        if(result.equals("manager")) this.createManager();
+        if(result.equals("manager")) this.createManager(actionEvent);
     }
 
-    private void createManager() throws IOException {
+    private void createManager(ActionEvent actionEvent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fronts/manager.fxml"));
 
         fxmlLoader.setControllerFactory(callback);
@@ -92,9 +93,9 @@ public class LoginController{
             }
         });
 
-
+        ((Node) (actionEvent.getSource())).getScene().getWindow().hide();
     }
-    private void createSteward(String login){
+    private void createSteward(ActionEvent actionEvent){
 
     }
 }

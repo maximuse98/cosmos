@@ -20,29 +20,13 @@ import javax.persistence.metamodel.EntityType;
 import java.util.Map;
 
 public class Main extends Application {
-//    public static void main(final String[] args) throws Exception {
-//        final Session session = HibernateUtil.getSessionFactory();
-//        try {
-//            System.out.println("querying all the managed entities...");
-//            final Metamodel metamodel = session.getSessionFactory().getMetamodel();
-//            for (EntityType<?> entityType : metamodel.getEntities()) {
-//                final String entityName = entityType.getName();
-//                final Query query = session.createQuery("FROM " + entityName);
-//                System.out.println("executing: " + query.getQueryString());
-//                for (Object o : query.list()) {
-//                    System.out.println("  " + o);
-//                }
-//            }
-//        } finally {
-//            session.close();
-//        }
-//    }
     public static void main(String[] args) {
         launch(args);
     }
 
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fronts/login.fxml"));
+        root.setId("pane");
         stage.setTitle("Authorization");
         //stage.getIcons().add(new Image(getClass().getResource("/pictures/logo.png").toString(), 512, 512, true, true));
         Scene scene = new Scene(root);
@@ -56,7 +40,6 @@ public class Main extends Application {
                 System.exit(0);
             }
         });
-
-
+        scene.getStylesheets().add("/css/load.css");
     }
 }
