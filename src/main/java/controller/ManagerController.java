@@ -459,10 +459,13 @@ public class ManagerController implements Initializable {
         Iterator iterator1 = query2.list().iterator();
         while(iterator1.hasNext()) {
             ClientOrderEntity result = (ClientOrderEntity) iterator1.next();
-            if(result.getClientByClientId().getId() == Integer.valueOf(selected.getId())){
-                this.setAlert("Удалите все связанные заказы");
-                return;
+            try {
+                if (result.getClientByClientId().getId() == Integer.valueOf(selected.getId())) {
+                    this.setAlert("Удалите все связанные заказы");
+                    return;
+                }
             }
+            catch (NullPointerException e){}
         }
         session2.close();
 
