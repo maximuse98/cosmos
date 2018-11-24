@@ -195,13 +195,6 @@ public class ManagerController implements Initializable {
         this.setAllInvoices();
         this.setAllProducts();
 
-        this.setClientFilter();
-        this.setRequestFilter();
-        this.setOrderFilter();
-        this.setInvoiceFilter();
-        this.setContractFilter();
-        this.setProductFilter();
-
         this.setLoginLabel();
     }
 
@@ -221,6 +214,7 @@ public class ManagerController implements Initializable {
         }
         clientTable.setItems(usersList);
         session.close();
+        this.setClientFilter();
     }
     private void setAllRequests(){
         requestsList = FXCollections.observableArrayList();
@@ -249,6 +243,7 @@ public class ManagerController implements Initializable {
         }
         requestTable.setItems(requestsList);
         session.close();
+        this.setRequestFilter();
     }
     private void setAllOrders(){
         ordersList = FXCollections.observableArrayList();
@@ -278,6 +273,8 @@ public class ManagerController implements Initializable {
         orderTable.setItems(ordersList);
         contractTable.setItems(ordersList);
         session.close();
+        this.setOrderFilter();
+        this.setContractFilter();
     }
     private void setAllInvoices(){
         invoicesList = FXCollections.observableArrayList();
@@ -303,6 +300,7 @@ public class ManagerController implements Initializable {
         }
         invoiceTable.setItems(invoicesList);
         session.close();
+        this.setInvoiceFilter();
     }
     private void setAllProducts(){
         productsList = FXCollections.observableArrayList();
@@ -315,6 +313,7 @@ public class ManagerController implements Initializable {
         }
         productTable.setItems(productsList);
         session.close();
+        this.setProductFilter();
     }
 
     public void onRequestTableClick(){

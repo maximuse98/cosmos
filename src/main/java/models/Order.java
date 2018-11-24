@@ -97,6 +97,7 @@ public class Order {
     }
 
     public String getRequestName() {
+        if(requestName.get() == null) return "";
         return requestName.get();
     }
 
