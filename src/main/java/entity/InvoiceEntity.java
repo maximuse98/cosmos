@@ -34,7 +34,7 @@ public class InvoiceEntity {
     public InvoiceEntity(SimpleStringProperty id, Boolean agreed, SimpleStringProperty dateCreate, SimpleStringProperty contractName) throws ParseException {
         this.id = Integer.valueOf(id.get());
         this.agreed = new Byte(String.valueOf(agreed? 1:0));
-        this.dateCreate = dt1.parse(dt1.format(dt2.parse(dateCreate.get())));
+        if(!dateCreate.get().equals("")){this.dateCreate = dt1.parse(dt1.format(dt2.parse(dateCreate.get())));}
 
         String hql = "FROM ClientOrderEntity " +
                     " WHERE contract LIKE '"+ contractName.get()+"'";

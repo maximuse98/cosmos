@@ -27,10 +27,11 @@ public class InvoiceProductEntity {
         this.id = Integer.valueOf(id);
     }
 
-    public InvoiceProductEntity(SimpleStringProperty id, SimpleStringProperty productName, SimpleStringProperty count, Boolean loaded) {
+    public InvoiceProductEntity(SimpleStringProperty id, SimpleStringProperty productName, SimpleStringProperty count, Boolean loaded,InvoiceEntity invoice) {
         this.id = Integer.valueOf(id.get());
         this.count = Integer.valueOf(count.get());
         this.loaded = new Byte(String.valueOf(loaded? 1:0));
+        this.invoiceByInvoiceId = invoice;
 
         String hql = " FROM ProductEntity " +
                      " WHERE name LIKE '"+ productName.get()+"'";

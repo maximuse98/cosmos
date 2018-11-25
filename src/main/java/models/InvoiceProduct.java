@@ -1,5 +1,6 @@
 package models;
 
+import entity.InvoiceEntity;
 import entity.InvoiceProductEntity;
 import javafx.beans.property.SimpleStringProperty;
 import org.hibernate.Session;
@@ -11,6 +12,7 @@ public class InvoiceProduct {
     private SimpleStringProperty productName;
     private SimpleStringProperty count;
     private Boolean loaded;
+    private InvoiceEntity invoice;
 
     private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
@@ -19,6 +21,7 @@ public class InvoiceProduct {
         this.productName = new SimpleStringProperty(productName);
         this.count = createCount(invoiceProduct.getCount());
         this.loaded = invoiceProduct.getLoaded()!=0;
+        this.invoice = invoiceProduct.getInvoiceByInvoiceId();
     }
 
     public String getId() {
@@ -92,7 +95,7 @@ public class InvoiceProduct {
     private void updateEntity(){
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.update(new InvoiceProductEntity(id,productName,count,loaded));
+        session.update(new InvoiceProductEntity(id,productName,count,loaded,invoice));
         session.getTransaction().commit();
         session.close();
     }

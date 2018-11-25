@@ -780,9 +780,11 @@ public class ManagerController implements Initializable {
         clientIdColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Client, String>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Client, String> t) {
+                String s = t.getNewValue();
                 ((Client) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setId(t.getNewValue());
+                refreshClientTable();
             }
         });
         clientNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -792,6 +794,7 @@ public class ManagerController implements Initializable {
                 ((Client) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setName(t.getNewValue());
+                refreshClientTable();
             }
         });
         clientSurnameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -801,6 +804,7 @@ public class ManagerController implements Initializable {
                 ((Client) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setSurname(t.getNewValue());
+                refreshClientTable();
             }
         });
         clientPhoneColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -810,6 +814,7 @@ public class ManagerController implements Initializable {
                 ((Client) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setPhone(t.getNewValue());
+                refreshClientTable();
             }
         });
         clientPhone2Column.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -819,6 +824,7 @@ public class ManagerController implements Initializable {
                 ((Client) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setPhone2(t.getNewValue());
+                refreshClientTable();
             }
         });
         clientAdressColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -828,6 +834,7 @@ public class ManagerController implements Initializable {
                 ((Client) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setAdress(t.getNewValue());
+                refreshClientTable();
             }
         });
         clientEmailColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -837,6 +844,7 @@ public class ManagerController implements Initializable {
                 ((Client) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setEmail(t.getNewValue());
+                refreshClientTable();
             }
         });
 
@@ -847,6 +855,7 @@ public class ManagerController implements Initializable {
                 ((Request) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setId(t.getNewValue());
+                refreshRequestTable();
             }
         });
         requestClientIdColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -856,6 +865,7 @@ public class ManagerController implements Initializable {
                 ((Request) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setClientName(t.getNewValue());
+                refreshRequestTable();
             }
         });
         requestColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -865,6 +875,7 @@ public class ManagerController implements Initializable {
                 ((Request) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setRequest(t.getNewValue());
+                refreshRequestTable();
             }
         });
         //requestCheckedColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -874,6 +885,7 @@ public class ManagerController implements Initializable {
                 ((Request) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setChecked(Boolean.getBoolean(t.getNewValue()));
+                refreshRequestTable();
             }
         });
         //requestApprovedColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -883,6 +895,7 @@ public class ManagerController implements Initializable {
                 ((Request) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setApproved(Boolean.getBoolean(t.getNewValue()));
+                refreshRequestTable();
             }
         });
         requestProductColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -892,6 +905,7 @@ public class ManagerController implements Initializable {
                 ((RequestProduct) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setProductName(t.getNewValue());
+                refreshRequestTable();
             }
         });
         requestCountColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -901,6 +915,7 @@ public class ManagerController implements Initializable {
                 ((RequestProduct) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setCount(t.getNewValue());
+                refreshRequestTable();
             }
         });
 
@@ -911,6 +926,7 @@ public class ManagerController implements Initializable {
                 ((Order) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setId(t.getNewValue());
+                refreshOrderTable();
             }
         });
         orderClientColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -920,6 +936,7 @@ public class ManagerController implements Initializable {
                 ((Order) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setClientName(t.getNewValue());
+                refreshOrderTable();
             }
         });
         orderRequestColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -929,6 +946,7 @@ public class ManagerController implements Initializable {
                 ((Order) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setRequestName(t.getNewValue());
+                refreshOrderTable();
             }
         });
         orderContractColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -938,6 +956,7 @@ public class ManagerController implements Initializable {
                 ((Order) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setContractName(t.getNewValue());
+                refreshOrderTable();
             }
         });
         //orderPaymentColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -947,6 +966,7 @@ public class ManagerController implements Initializable {
                 ((Order) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setPayment(Boolean.getBoolean(t.getNewValue()));
+                refreshOrderTable();
             }
         });
         orderProductColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -956,6 +976,7 @@ public class ManagerController implements Initializable {
                 ((OrderProduct) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setProductName(t.getNewValue());
+                refreshOrderTable();
             }
         });
         orderCountColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -965,6 +986,7 @@ public class ManagerController implements Initializable {
                 ((OrderProduct) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setCount(t.getNewValue());
+                refreshOrderTable();
             }
         });
         orderRestColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -974,6 +996,7 @@ public class ManagerController implements Initializable {
                 ((OrderProduct) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setRest(t.getNewValue());
+                refreshOrderTable();
             }
         });
 
@@ -984,6 +1007,7 @@ public class ManagerController implements Initializable {
                 ((Order) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setContractName(t.getNewValue());
+                refreshContractTable();
             }
         });
         contractClientNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -993,6 +1017,7 @@ public class ManagerController implements Initializable {
                 ((Order) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setClientName(t.getNewValue());
+                refreshContractTable();
             }
         });
         contractBeginDateColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -1002,6 +1027,7 @@ public class ManagerController implements Initializable {
                 ((Order) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setBeginDate(t.getNewValue());
+                refreshContractTable();
             }
         });
         contractEndDateColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -1011,6 +1037,7 @@ public class ManagerController implements Initializable {
                 ((Order) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setEndDate(t.getNewValue());
+                refreshContractTable();
             }
         });
         //contractPaymentColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -1020,6 +1047,7 @@ public class ManagerController implements Initializable {
                 ((Order) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setPayment(Boolean.getBoolean(t.getNewValue()));
+                refreshContractTable();
             }
         });
 
@@ -1030,6 +1058,7 @@ public class ManagerController implements Initializable {
                 ((Invoice) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setId(t.getNewValue());
+                refreshInvoiceTable();
             }
         });
         invoiceContractColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -1039,6 +1068,7 @@ public class ManagerController implements Initializable {
                 ((Invoice) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setContractName(t.getNewValue());
+                refreshInvoiceTable();
             }
         });
         invoiceDateCreateColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -1048,6 +1078,7 @@ public class ManagerController implements Initializable {
                 ((Invoice) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setDateCreate(t.getNewValue());
+                refreshInvoiceTable();
             }
         });
         //invoiceAgreedColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -1057,6 +1088,7 @@ public class ManagerController implements Initializable {
                 ((Invoice) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setAgreed(Boolean.getBoolean(t.getNewValue()));
+                refreshInvoiceTable();
             }
         });
         invoiceProductNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -1066,6 +1098,7 @@ public class ManagerController implements Initializable {
                 ((InvoiceProduct) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setProductName(t.getNewValue());
+                refreshInvoiceTable();
             }
         });
         invoiceProductCountColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -1075,6 +1108,7 @@ public class ManagerController implements Initializable {
                 ((InvoiceProduct) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setCount(t.getNewValue());
+                refreshInvoiceTable();
             }
         });
         //invoiceProductLoadedColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -1084,6 +1118,7 @@ public class ManagerController implements Initializable {
                 ((InvoiceProduct) t.getTableView().getItems().get(
                         t.getTablePosition().getRow())
                 ).setLoaded(Boolean.getBoolean(t.getNewValue()));
+                refreshInvoiceTable();
             }
         });
     }
@@ -1101,6 +1136,7 @@ public class ManagerController implements Initializable {
     }
     private void refreshOrderTable(){
         orderTable.refresh();
+        contractTable.refresh();
         try {
             orderProductTable.refresh();
         }catch (NullPointerException e){}

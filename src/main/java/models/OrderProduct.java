@@ -1,5 +1,6 @@
 package models;
 
+import entity.ClientOrderEntity;
 import entity.InvoiceProductEntity;
 import entity.OrderProductEntity;
 import javafx.beans.property.SimpleStringProperty;
@@ -12,6 +13,7 @@ public class OrderProduct {
     private SimpleStringProperty productName;
     private SimpleStringProperty count;
     private SimpleStringProperty rest;
+    private ClientOrderEntity order;
 
     private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
@@ -20,6 +22,7 @@ public class OrderProduct {
         this.productName = new SimpleStringProperty(productName);
         this.count = createCount(orderProduct.getCount());
         this.rest = createCount(orderProduct.getRest());
+        this.order = orderProduct.getClientOrderByOrderId();
     }
 
     public String getId() {
@@ -75,6 +78,7 @@ public class OrderProduct {
             this.updateEntity();
         }
         catch (Exception e){
+            e.printStackTrace();
             this.count.set(s);
         }
     }
@@ -101,7 +105,7 @@ public class OrderProduct {
     private void updateEntity(){
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.update(new OrderProductEntity(id,count,rest,productName));
+        session.update(new OrderProductEntity(id,count,rest,productName,order));
         session.getTransaction().commit();
         session.close();
     }
