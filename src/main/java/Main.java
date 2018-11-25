@@ -5,7 +5,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import org.hibernate.HibernateException;
 import org.hibernate.Metamodel;
@@ -14,6 +16,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import util.HibernateUtil;
+import com.jfoenix.controls.JFXDecorator;
 
 import javax.persistence.metamodel.EntityType;
 
@@ -26,12 +29,20 @@ public class Main extends Application {
 
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fronts/login.fxml"));
-        root.setId("pane");
         stage.setTitle("Authorization");
-        //stage.getIcons().add(new Image(getClass().getResource("/pictures/logo.png").toString(), 512, 512, true, true));
+
+        //JFXDecorator decorator = new JFXDecorator(stage, root);
+        //decorator.setCustomMaximize(true);
+        //Scene scene = new Scene(decorator);
+
         Scene scene = new Scene(root);
+
         stage.setScene(scene);
         stage.setResizable(false);
+        scene.getStylesheets().add("/css/load.css");
+        stage.getIcons().add(new Image("/pics/logo.png"));
+        //scene.setFill(Color.TRANSPARENT);
+        //stage.initStyle(StageStyle.TRANSPARENT);
         stage.show();
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -40,6 +51,5 @@ public class Main extends Application {
                 System.exit(0);
             }
         });
-        scene.getStylesheets().add("/css/load.css");
     }
 }

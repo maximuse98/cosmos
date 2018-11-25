@@ -82,6 +82,8 @@ public class LoginController{
         stage.setTitle("Manager");
         //stage.setMinHeight(560);
         //stage.setMinWidth(550);
+        scene.getStylesheets().add("/css/manager.css");
+        stage.getIcons().add(new Image("/pics/logo.png"));
 
         stage.show();
         stage.setResizable(false);

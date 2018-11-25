@@ -7,20 +7,20 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="484.0" prefWidth="839.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ManagerController">
+<?import javafx.scene.layout.HBox?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<HBox id="vbox" maxHeight="-Infinity" maxWidth="Infinity" prefHeight="470.0" prefWidth="839.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ManagerController">
   <children>
-    <AnchorPane maxHeight="-1.0" maxWidth="1.7976931348623157E308" prefHeight="484.0" prefWidth="839.0" VBox.vgrow="ALWAYS">
-      <children>
-            <HBox layoutX="6.0" layoutY="31.0" prefHeight="324.0" prefWidth="827.0" />
-            <TabPane maxWidth="1.7976931348623157E308" prefHeight="477.0" prefWidth="839.0" tabClosingPolicy="UNAVAILABLE">
+        <JFXTabPane maxHeight="-Infinity" maxWidth="Infinity" prefHeight="470.0" prefWidth="900.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab text="Клиенты">
                   <content>
-                    <AnchorPane fx:id="clientPane" minHeight="0.0" minWidth="0.0" prefHeight="439.0" prefWidth="839.0">
+                    <AnchorPane fx:id="clientPane" minHeight="0.0" minWidth="0.0" prefHeight="462.0" prefWidth="839.0">
                            <children>
                               <TableView fx:id="clientTable" editable="true" layoutX="31.0" layoutY="47.0" prefHeight="343.0" prefWidth="778.0">
                                 <columns>
@@ -30,13 +30,23 @@
                                     <TableColumn fx:id="clientPhoneColumn" maxWidth="100.0" prefWidth="94.0" text="Телефон 1" />
                                     <TableColumn fx:id="clientPhone2Column" maxWidth="100.0" prefWidth="100.0" text="Телефон 2" />
                                     <TableColumn fx:id="clientAdressColumn" maxWidth="200.0" minWidth="0.0" prefWidth="200.0" text="Адрес" />
-                                    <TableColumn fx:id="clientEmailColumn" maxWidth="180.0" prefWidth="138.0" text="E-mail" />
+                                    <TableColumn fx:id="clientEmailColumn" maxWidth="180.0" prefWidth="137.0" text="E-mail" />
                                 </columns>
                               </TableView>
-                              <Button layoutX="640.0" layoutY="403.0" mnemonicParsing="false" onMouseClicked="#onClientAddClick" prefHeight="25.0" prefWidth="79.0" text="Добавить" />
-                              <Button layoutX="730.0" layoutY="403.0" mnemonicParsing="false" onMouseClicked="#onClientDeleteClick" prefHeight="25.0" prefWidth="79.0" text="Удалить" />
-                              <Label fx:id="loginLabel1" layoutX="31.0" layoutY="14.0" text="Вы авторизваны как " />
+                              <Button layoutX="640.0" layoutY="402.0" mnemonicParsing="false" onMouseClicked="#onClientAddClick" prefHeight="25.0" prefWidth="79.0" text="Добавить" />
+                              <Button layoutX="730.0" layoutY="402.0" mnemonicParsing="false" onMouseClicked="#onClientDeleteClick" prefHeight="25.0" prefWidth="79.0" text="Удалить" />
+                              <Label id="login" fx:id="loginLabel1" layoutX="70.0" layoutY="16.0" text="Вы авторизваны как " />
                               <TextField fx:id="clientFilter" layoutX="519.0" layoutY="10.0" prefHeight="25.0" prefWidth="290.0" />
+                              <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="484.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image requestedHeight="70" requestedWidth="70" url="/pics/look.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="31.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image requestedHeight="60" requestedWidth="60" url="/pics/user.png" />
+                                 </image>
+                              </ImageView>
                            </children>
                     </AnchorPane>
                   </content>
@@ -54,19 +64,34 @@
                                     <TableColumn fx:id="requestApprovedColumn" prefWidth="79.0" text="Утверждено" />
                                 </columns>
                               </TableView>
-                              <TableView fx:id="requestProductTable" editable="true" layoutX="590.0" layoutY="44.0" prefHeight="344.0" prefWidth="217.0">
+                              <TableView fx:id="requestProductTable" editable="true" layoutX="590.0" layoutY="45.0" prefHeight="343.0" prefWidth="217.0">
                                 <columns>
                                     <TableColumn fx:id="requestProductColumn" prefWidth="141.0" text="Товар" />
-                                    <TableColumn fx:id="requestCountColumn" prefWidth="75.0" text="Количество" />
+                                    <TableColumn fx:id="requestCountColumn" prefWidth="74.0" text="Количество" />
                                 </columns>
                               </TableView>
-                              <Button layoutX="400.0" layoutY="403.0" mnemonicParsing="false" onMouseClicked="#onRequestAddClick" prefHeight="25.0" prefWidth="79.0" text="Добавить" />
-                              <Button layoutX="490.0" layoutY="403.0" mnemonicParsing="false" onMouseClicked="#onRequestDeleteClick" prefHeight="25.0" prefWidth="79.0" text="Удалить" />
-                              <Button layoutX="638.0" layoutY="403.0" mnemonicParsing="false" onMouseClicked="#onRequestProductAddClick" prefHeight="25.0" prefWidth="79.0" text="Добавить" />
-                              <Button layoutX="728.0" layoutY="403.0" mnemonicParsing="false" onMouseClicked="#onRequestProductDeleteClick" prefHeight="25.0" prefWidth="79.0" text="Удалить" />
-                              <Label fx:id="loginLabel2" layoutX="32.0" layoutY="14.0" text="Вы авторизваны как " />
+                              <Button layoutX="400.0" layoutY="400.0" mnemonicParsing="false" onMouseClicked="#onRequestAddClick" prefHeight="25.0" prefWidth="79.0" text="Добавить" />
+                              <Button layoutX="490.0" layoutY="400.0" mnemonicParsing="false" onMouseClicked="#onRequestDeleteClick" prefHeight="25.0" prefWidth="79.0" text="Удалить" />
+                              <Button layoutX="638.0" layoutY="400.0" mnemonicParsing="false" onMouseClicked="#onRequestProductAddClick" prefHeight="25.0" prefWidth="79.0" text="Добавить" />
+                              <Button layoutX="728.0" layoutY="400.0" mnemonicParsing="false" onMouseClicked="#onRequestProductDeleteClick" prefHeight="25.0" prefWidth="79.0" text="Удалить" />
+                              <Label id="login" fx:id="loginLabel2" layoutX="69.0" layoutY="17.0" text="Вы авторизваны как " />
                               <TextField fx:id="requestFilter" layoutX="279.0" layoutY="10.0" prefHeight="25.0" prefWidth="290.0" />
                               <TextField fx:id="requestProductFilter" layoutX="688.0" layoutY="10.0" prefHeight="25.0" prefWidth="119.0" />
+                              <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="32.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image requestedHeight="60" requestedWidth="60" url="/pics/user.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="248.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image requestedHeight="70" requestedWidth="70" url="/pics/look.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="654.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image requestedHeight="70" requestedWidth="70" url="/pics/look.png" />
+                                 </image>
+                              </ImageView>
                            </children>
                     </AnchorPane>
                   </content>
@@ -75,29 +100,44 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="450.0" prefWidth="763.0">
                            <children>
-                              <TextField fx:id="orderProductFilter" layoutX="663.0" layoutY="10.0" prefHeight="25.0" prefWidth="144.0" />
-                              <TableView fx:id="orderTable" editable="true" layoutX="33.0" layoutY="44.0" onMouseClicked="#onOrderTableClick" prefHeight="350.0" prefWidth="469.0">
+                              <TextField fx:id="orderProductFilter" layoutX="648.0" layoutY="10.0" prefHeight="25.0" prefWidth="159.0" />
+                              <TableView fx:id="orderTable" editable="true" layoutX="33.0" layoutY="44.0" onMouseClicked="#onOrderTableClick" prefHeight="343.0" prefWidth="469.0">
                                 <columns>
                                     <TableColumn fx:id="orderIdColumn" prefWidth="45.0" text="ID" />
                                     <TableColumn fx:id="orderClientColumn" prefWidth="138.0" text="Клиент" />
                                     <TableColumn fx:id="orderRequestColumn" prefWidth="107.0" text="Заявка" />
                                     <TableColumn fx:id="orderContractColumn" prefWidth="107.0" text="Договор" />
-                                    <TableColumn fx:id="orderPaymentColumn" prefWidth="71.0" text="Оплачено" />
+                                    <TableColumn fx:id="orderPaymentColumn" prefWidth="70.0" text="Оплачено" />
                                 </columns>
                               </TableView>
-                              <TableView fx:id="orderProductTable" editable="true" layoutX="523.0" layoutY="44.0" prefHeight="350.0" prefWidth="284.0">
+                              <TableView fx:id="orderProductTable" editable="true" layoutX="523.0" layoutY="44.0" prefHeight="343.0" prefWidth="284.0">
                                 <columns>
                                     <TableColumn fx:id="orderProductColumn" prefWidth="139.0" text="Товар" />
                                     <TableColumn fx:id="orderCountColumn" prefWidth="78.0" text="Количество" />
                                     <TableColumn fx:id="orderRestColumn" prefWidth="65.0" text="Остаток" />
                                 </columns>
                               </TableView>
-                              <Button layoutX="332.0" layoutY="404.0" mnemonicParsing="false" onMouseClicked="#onOrderAddClick" prefHeight="25.0" prefWidth="79.0" text="Добавить" />
-                              <Button layoutX="423.0" layoutY="404.0" mnemonicParsing="false" onMouseClicked="#onOrderDeleteClick" prefHeight="25.0" prefWidth="79.0" text="Удалить" />
-                              <Button layoutX="638.0" layoutY="404.0" mnemonicParsing="false" onMouseClicked="#onOrderProductAddClick" prefHeight="25.0" prefWidth="79.0" text="Добавить" />
-                              <Button layoutX="728.0" layoutY="404.0" mnemonicParsing="false" onMouseClicked="#onOrderProductDeleteClick" prefHeight="25.0" prefWidth="79.0" text="Удалить" />
-                              <Label fx:id="loginLabel3" layoutX="33.0" layoutY="14.0" text="Вы авторизваны как " />
+                              <Button layoutX="332.0" layoutY="400.0" mnemonicParsing="false" onMouseClicked="#onOrderAddClick" prefHeight="25.0" prefWidth="79.0" text="Добавить" />
+                              <Button layoutX="423.0" layoutY="400.0" mnemonicParsing="false" onMouseClicked="#onOrderDeleteClick" prefHeight="25.0" prefWidth="79.0" text="Удалить" />
+                              <Button layoutX="638.0" layoutY="400.0" mnemonicParsing="false" onMouseClicked="#onOrderProductAddClick" prefHeight="25.0" prefWidth="79.0" text="Добавить" />
+                              <Button layoutX="728.0" layoutY="400.0" mnemonicParsing="false" onMouseClicked="#onOrderProductDeleteClick" prefHeight="25.0" prefWidth="79.0" text="Удалить" />
+                              <Label id="login" fx:id="loginLabel3" layoutX="72.0" layoutY="14.0" text="Вы авторизваны как " />
                               <TextField fx:id="orderFilter" layoutX="276.0" layoutY="10.0" prefHeight="25.0" prefWidth="226.0" />
+                              <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="33.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image requestedHeight="60" requestedWidth="60" url="/pics/user.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="244.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image requestedHeight="70" requestedWidth="70" url="/pics/look.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="614.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image requestedHeight="70" requestedWidth="70" url="/pics/look.png" />
+                                 </image>
+                              </ImageView>
                            </children>
                         </AnchorPane>
                      </content>
@@ -106,7 +146,7 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="450.0" prefWidth="798.0">
                            <children>
-                              <TableView fx:id="invoiceTable" editable="true" layoutX="34.0" layoutY="44.0" onMouseClicked="#onInvoiceTableClick" prefHeight="352.0" prefWidth="434.0">
+                              <TableView fx:id="invoiceTable" editable="true" layoutX="34.0" layoutY="44.0" onMouseClicked="#onInvoiceTableClick" prefHeight="343.0" prefWidth="434.0">
                                  <columns>
                                     <TableColumn fx:id="invoiceIdColumn" prefWidth="45.0" text="ID" />
                                     <TableColumn fx:id="invoiceContractColumn" prefWidth="193.0" text="Договор" />
@@ -114,20 +154,35 @@
                                     <TableColumn fx:id="invoiceAgreedColumn" prefWidth="91.0" text="Согласовано" />
                                  </columns>
                               </TableView>
-                              <Button layoutX="299.0" layoutY="404.0" mnemonicParsing="false" onMouseClicked="#onInvoiceAddClick" prefHeight="25.0" prefWidth="79.0" text="Добавить" />
-                              <Button layoutX="389.0" layoutY="404.0" mnemonicParsing="false" onMouseClicked="#onInvoiceDeleteClick" prefHeight="25.0" prefWidth="79.0" text="Удалить" />
-                              <TableView fx:id="invoiceProductTable" editable="true" layoutX="482.0" layoutY="44.0" prefHeight="351.0" prefWidth="323.0">
+                              <Button layoutX="299.0" layoutY="400.0" mnemonicParsing="false" onMouseClicked="#onInvoiceAddClick" prefHeight="25.0" prefWidth="79.0" text="Добавить" />
+                              <Button layoutX="389.0" layoutY="400.0" mnemonicParsing="false" onMouseClicked="#onInvoiceDeleteClick" prefHeight="25.0" prefWidth="79.0" text="Удалить" />
+                              <TableView fx:id="invoiceProductTable" editable="true" layoutX="482.0" layoutY="44.0" prefHeight="343.0" prefWidth="323.0">
                                  <columns>
                                     <TableColumn fx:id="invoiceProductNameColumn" prefWidth="172.0" text="Товар" />
                                     <TableColumn fx:id="invoiceProductCountColumn" prefWidth="76.0" text="Количество" />
                                     <TableColumn fx:id="invoiceProductLoadedColumn" prefWidth="73.0" text="Отгружено" />
                                  </columns>
                               </TableView>
-                              <Button layoutX="636.0" layoutY="404.0" mnemonicParsing="false" onMouseClicked="#onInvoiceProductAddClick" prefHeight="25.0" prefWidth="79.0" text="Добавить" />
-                              <Button layoutX="726.0" layoutY="404.0" mnemonicParsing="false" onMouseClicked="#onInvoiceProductDeleteClick" prefHeight="25.0" prefWidth="79.0" text="Удалить" />
-                              <Label fx:id="loginLabel4" layoutX="34.0" layoutY="14.0" text="Вы авторизваны как " />
+                              <Button layoutX="636.0" layoutY="400.0" mnemonicParsing="false" onMouseClicked="#onInvoiceProductAddClick" prefHeight="25.0" prefWidth="79.0" text="Добавить" />
+                              <Button layoutX="726.0" layoutY="400.0" mnemonicParsing="false" onMouseClicked="#onInvoiceProductDeleteClick" prefHeight="25.0" prefWidth="79.0" text="Удалить" />
+                              <Label id="login" fx:id="loginLabel4" layoutX="73.0" layoutY="15.0" text="Вы авторизваны как " />
                               <TextField fx:id="invoiceFilter" layoutX="271.0" layoutY="10.0" prefHeight="25.0" prefWidth="197.0" />
                               <TextField fx:id="invoiceProductFilter" layoutX="653.0" layoutY="10.0" prefHeight="25.0" prefWidth="152.0" />
+                              <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="34.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image requestedHeight="60" requestedWidth="60" url="/pics/user.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="239.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image requestedHeight="70" requestedWidth="70" url="/pics/look.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="620.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image requestedHeight="70" requestedWidth="70" url="/pics/look.png" />
+                                 </image>
+                              </ImageView>
                            </children></AnchorPane>
                      </content>
                   </Tab>
@@ -135,17 +190,27 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <Label fx:id="loginLabel5" layoutX="33.0" layoutY="14.0" text="Вы авторизваны как " />
-                              <TableView fx:id="contractTable" editable="true" layoutX="33.0" layoutY="45.0" prefHeight="382.0" prefWidth="773.0">
+                              <Label id="login" fx:id="loginLabel5" layoutX="73.0" layoutY="15.0" text="Вы авторизваны как " />
+                              <TableView fx:id="contractTable" editable="true" layoutX="33.0" layoutY="45.0" prefHeight="368.0" prefWidth="773.0">
                                 <columns>
                                   <TableColumn fx:id="contractNameColumn" prefWidth="145.0" text="Договор" />
                                   <TableColumn fx:id="contractClientNameColumn" prefWidth="289.0" text="Клиент" />
                                   <TableColumn fx:id="contractBeginDateColumn" prefWidth="124.0" text="Начальная дата" />
                                   <TableColumn fx:id="contractEndDateColumn" minWidth="0.0" prefWidth="123.0" text="Конечная дата" />
-                                  <TableColumn fx:id="contractPaymentColumn" prefWidth="91.0" text="Оплачено" />
+                                  <TableColumn fx:id="contractPaymentColumn" prefWidth="89.0" text="Оплачено" />
                                 </columns>
                               </TableView>
                               <TextField fx:id="contractFilter" layoutX="466.0" layoutY="10.0" prefHeight="25.0" prefWidth="340.0" />
+                              <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="33.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image requestedHeight="60" requestedWidth="60" url="/pics/user.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="430.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image requestedHeight="70" requestedWidth="70" url="/pics/look.png" />
+                                 </image>
+                              </ImageView>
                            </children>
                         </AnchorPane>
                      </content>
@@ -155,7 +220,7 @@
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
                               <TextField fx:id="productFilter" layoutX="466.0" layoutY="10.0" prefHeight="25.0" prefWidth="340.0" />
-                              <TableView fx:id="productTable" layoutX="34.0" layoutY="45.0" prefHeight="384.0" prefWidth="772.0">
+                              <TableView fx:id="productTable" layoutX="34.0" layoutY="45.0" prefHeight="368.0" prefWidth="772.0">
                                 <columns>
                                   <TableColumn fx:id="productIdColumn" prefWidth="75.0" text="ID" />
                                   <TableColumn fx:id="productNameColumn" prefWidth="240.0" text="Товар" />
@@ -164,14 +229,22 @@
                                   <TableColumn fx:id="productCountColumn" prefWidth="124.0" text="Количество" />
                                 </columns>
                               </TableView>
-                              <Label fx:id="loginLabel6" layoutX="34.0" layoutY="14.0" text="Вы авторизваны как " />
+                              <Label id="login" fx:id="loginLabel6" layoutX="73.0" layoutY="15.0" text="Вы авторизваны как " />
+                              <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="34.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image requestedHeight="60" requestedWidth="60" url="/pics/user.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="431.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image requestedHeight="70" requestedWidth="70" url="/pics/look.png" />
+                                 </image>
+                              </ImageView>
                            </children>
                         </AnchorPane>
                     </content>
                 </Tab>
               </tabs>
-            </TabPane>
+        </JFXTabPane>
       </children>
-    </AnchorPane>
-  </children>
-</VBox>
+</HBox>

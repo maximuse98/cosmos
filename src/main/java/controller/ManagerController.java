@@ -1129,12 +1129,12 @@ public class ManagerController implements Initializable {
     }
 
     private void setLoginLabel(){
-        loginLabel1.setText("Вы авторизваны как "+login);
-        loginLabel2.setText("Вы авторизваны как "+login);
-        loginLabel3.setText("Вы авторизваны как "+login);
-        loginLabel4.setText("Вы авторизваны как "+login);
-        loginLabel5.setText("Вы авторизваны как "+login);
-        loginLabel6.setText("Вы авторизваны как "+login);
+        loginLabel1.setText(login);
+        loginLabel2.setText(login);
+        loginLabel3.setText(login);
+        loginLabel4.setText(login);
+        loginLabel5.setText(login);
+        loginLabel6.setText(login);
     }
     private void setAlert(String reason){
         Exception e = new Exception(reason);

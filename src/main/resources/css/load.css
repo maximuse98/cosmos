@@ -1,3 +1,40 @@
 #pane{
     -fx-background-image: url("/pics/load2.jpg");
 }
+
+#login {
+    -fx-content-display: text-only;
+    -fx-font-weight: 700;
+    -fx-text-fill: aliceblue;
+    -fx-padding: .5em 2em ;
+    -fx-border-radius: 6px;
+    -fx-background-color: linear-gradient(#F3AE0F, #E38916) #E38916;
+}
+
+#login:hover {
+    -fx-background-color: linear-gradient(#f5ae00, #f59500) #f5ae00;
+}
+#login:pressed{
+    -fx-background-color: linear-gradient(#f59500, #f5ae00) #f59500;
+    -fx-effect: dropshadow(three-pass-box, rgba(44, 55, 46, 0.08), 0,0,0,0);
+}
+
+.label{
+    -fx-background-color: transparent;
+    -fx-text-fill: aliceblue;
+    -fx-font-family: Gill Sans,sans-serif;
+    -fx-font-weight: lighter;
+}
+
+.jfx-decorator {
+    -fx-decorator-color: #63bec3;
+}
+
+.jfx-decorator .jfx-decorator-buttons-container {
+    -fx-background-color: -fx-decorator-color;
+}
+
+.jfx-decorator .resize-border {
+    -fx-border-color: -fx-decorator-color;
+    -fx-border-width: 0 4 4 4;
+}

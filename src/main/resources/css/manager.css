@@ -1,0 +1,33 @@
+#vbox{
+    -fx-background-image: url('/pics/loadMain.jpg')100% 100% no-repeat;
+    -fx-background-size: contain;
+}
+
+#login{
+    -fx-font-family: Gill Sans,sans-serif;
+    -fx-font-style: normal;
+    -fx-text-fill: aliceblue;
+}
+
+.jfx-tab-pane *.tab-header-background {
+    -fx-background-color: #143d5b;
+    -fx-border-style: none;
+}
+
+.jfx-tab-pane .tab-selected-line {
+    -fx-stroke: #f6ff00;
+    -fx-stroke-width: 3pt;
+}
+
+.button {
+    -fx-background-color: #5d90e1;
+    -fx-background-radius: 5;
+    -fx-text-fill: #fffded;
+    -fx-background-insets: 0, 1, 2, 3, 0;
+    -fx-font-size: 12px;
+}
+
+.checkbox, .radio {
+    -fx-content-display: inline;
+}
+
