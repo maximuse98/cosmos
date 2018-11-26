@@ -15,8 +15,12 @@
 }
 
 .jfx-tab-pane .tab-selected-line {
-    -fx-stroke: #f6ff00;
+    -fx-stroke: #fffded;
     -fx-stroke-width: 3pt;
+}
+
+.jfx-tab-pane .tab-header-area .control-buttons-tab .tab-down-button{
+    -fx-background-color: white;
 }
 
 .button {

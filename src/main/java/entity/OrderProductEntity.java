@@ -26,19 +26,25 @@ public class OrderProductEntity {
         this.id = Integer.valueOf(id);
     }
 
-    public OrderProductEntity(SimpleStringProperty id, SimpleStringProperty count, SimpleStringProperty rest, SimpleStringProperty productName) {
+    public OrderProductEntity(SimpleStringProperty id, SimpleStringProperty count, SimpleStringProperty rest, SimpleStringProperty productName, ClientOrderEntity order) {
         this.id = Integer.valueOf(id.get());
-        this.count = Integer.valueOf(count.get());
-        this.rest = Integer.valueOf(rest.get());
+        if(!count.get().equals("")){
+            this.count = Integer.valueOf(count.get());
+        }
+        if(!rest.get().equals("")){
+            this.rest = Integer.valueOf(rest.get());
+        }
+        this.clientOrderByOrderId = order;
 
-        String hql = " FROM ProductEntity " +
-                " WHERE name LIKE '"+ productName.get()+"'";
-        Session session = sessionFactory.openSession();
-        Query query = session.createQuery(hql);
-        ProductEntity result = (ProductEntity) query.list().get(0);
-        session.close();
-
-        this.productByProductId = result;
+        try {
+            String hql = " FROM ProductEntity " +
+                    " WHERE name LIKE '" + productName.get() + "'";
+            Session session = sessionFactory.openSession();
+            Query query = session.createQuery(hql);
+            ProductEntity result = (ProductEntity) query.list().get(0);
+            session.close();
+            this.productByProductId = result;
+        }catch (Exception e){}
     }
 
     @Id

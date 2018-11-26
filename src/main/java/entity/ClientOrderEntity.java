@@ -36,8 +36,8 @@ public class ClientOrderEntity {
     public ClientOrderEntity(SimpleStringProperty id, SimpleStringProperty requestName, SimpleStringProperty contractName, SimpleStringProperty clientName, SimpleStringProperty beginDate, SimpleStringProperty endDate, Boolean payment) throws ParseException {
         this.id = Integer.valueOf(id.get());
         this.contract = contractName.get();
-        this.beginDate = dt1.parse(dt1.format(dt2.parse(beginDate.get())));
-        this.endDate = dt1.parse(dt1.format(dt2.parse(endDate.get())));
+        if(!beginDate.get().equals("")){this.beginDate = dt1.parse(dt1.format(dt2.parse(beginDate.get())));}
+        if(!endDate.get().equals("")){this.endDate = dt1.parse(dt1.format(dt2.parse(endDate.get())));}
         this.payment = new Byte(String.valueOf(payment? 1:0));
 
         try {

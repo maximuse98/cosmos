@@ -25,9 +25,10 @@ public class RequestProductEntity {
         this.id = Integer.valueOf(id);
     }
 
-    public RequestProductEntity(SimpleStringProperty id, SimpleStringProperty count, SimpleStringProperty productName) {
+    public RequestProductEntity(SimpleStringProperty id, SimpleStringProperty count, SimpleStringProperty productName, ClientRequestEntity request) {
         this.id = Integer.valueOf(id.get());
         this.count = Integer.valueOf(count.get());
+        this.clientRequestByRequestId = request;
 
         String hql = " FROM ProductEntity " +
                 " WHERE name LIKE '"+ productName.get()+"'";

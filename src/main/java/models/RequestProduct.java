@@ -1,5 +1,6 @@
 package models;
 
+import entity.ClientRequestEntity;
 import entity.RequestProductEntity;
 import javafx.beans.property.SimpleStringProperty;
 import org.hibernate.Session;
@@ -10,6 +11,7 @@ public class RequestProduct {
     private SimpleStringProperty id;
     private SimpleStringProperty productName;
     private SimpleStringProperty count;
+    private ClientRequestEntity request;
 
     private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
@@ -17,6 +19,7 @@ public class RequestProduct {
         this.id = createCount(requestProduct.getId());
         this.productName = new SimpleStringProperty(productName);
         this.count = createCount(requestProduct.getCount());
+        this.request = requestProduct.getClientRequestByRequestId();
     }
 
     public String getId() {
@@ -70,7 +73,7 @@ public class RequestProduct {
     private void updateEntity(){
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.update(new RequestProductEntity(id,count,productName));
+        session.update(new RequestProductEntity(id,count,productName,request));
         session.getTransaction().commit();
         session.close();
     }
