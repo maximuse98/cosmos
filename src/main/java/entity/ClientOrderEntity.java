@@ -28,11 +28,11 @@ public class ClientOrderEntity {
 
     public ClientOrderEntity() {
     }
-
+    @Deprecated
     public ClientOrderEntity(String id) {
         this.id = Integer.valueOf(id);
     }
-
+    @Deprecated
     public ClientOrderEntity(SimpleStringProperty id, SimpleStringProperty requestName, SimpleStringProperty contractName, SimpleStringProperty clientName, SimpleStringProperty beginDate, SimpleStringProperty endDate, Boolean payment) throws ParseException {
         this.id = Integer.valueOf(id.get());
         this.contract = contractName.get();
@@ -51,19 +51,18 @@ public class ClientOrderEntity {
             this.requestId = result.getId();
         }catch (Exception e){
         }
+        try {
+            String client = clientName.get();
+            String name = client.substring(0, client.indexOf(' '));
+            String surname = client.substring(client.indexOf(' ') + 1, client.length());
 
-        String client = clientName.get();
-        String name = client.substring(0, client.indexOf(' '));
-        String surname = client.substring(client.indexOf(' ')+1, client.length());
-
-        String hql1 = "FROM ClientEntity" +
-                " WHERE name LIKE '"+ name +"' AND surname LIKE '"+surname+"'";
-        Session session1 = sessionFactory.openSession();
-        Query query1 = session1.createQuery(hql1);
-        ClientEntity result1 = (ClientEntity) query1.list().get(0);
-        session1.close();
-
-        this.clientByClientId = result1;
+            String hql1 = "FROM ClientEntity" +
+                    " WHERE name LIKE '" + name + "' AND surname LIKE '" + surname + "'";
+            Session session1 = sessionFactory.openSession();
+            Query query1 = session1.createQuery(hql1);
+            ClientEntity result1 = (ClientEntity) query1.list().get(0);
+            this.clientByClientId = result1;
+        }catch (Exception e){}
     }
 
     @Id

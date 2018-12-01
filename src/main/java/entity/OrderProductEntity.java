@@ -21,11 +21,11 @@ public class OrderProductEntity {
 
     public OrderProductEntity() {
     }
-
+    @Deprecated
     public OrderProductEntity(String id) {
         this.id = Integer.valueOf(id);
     }
-
+    @Deprecated
     public OrderProductEntity(SimpleStringProperty id, SimpleStringProperty count, SimpleStringProperty rest, SimpleStringProperty productName, ClientOrderEntity order) {
         this.id = Integer.valueOf(id.get());
         if(!count.get().equals("")){

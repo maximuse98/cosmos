@@ -8,6 +8,8 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import util.HibernateUtil;
 
+import javax.persistence.criteria.CriteriaBuilder;
+
 public class Client {
     private SimpleStringProperty id;
     private SimpleStringProperty name;
@@ -16,6 +18,8 @@ public class Client {
     private SimpleStringProperty phone2;
     private SimpleStringProperty adress;
     private SimpleStringProperty email;
+
+    private ClientEntity clientEntity;
 
     private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
@@ -27,6 +31,8 @@ public class Client {
         this.phone2 = new SimpleStringProperty(client.getPhone2());
         this.adress = new SimpleStringProperty(client.getAdress());
         this.email = new SimpleStringProperty(client.getEmail());
+
+        this.clientEntity = client;
     }
 
     public String getId() {
@@ -86,82 +92,102 @@ public class Client {
     }
 
     public void setId(String id) {
-        String s = this.getId();
-        this.id.set(id);
+        String s = getId();
         try {
+            this.id.set(id);
+            clientEntity.setId(Integer.valueOf(id));
             this.updateEntity();
         }catch (Exception e){
             this.id.set(s);
+            clientEntity.setId(Integer.valueOf(s));
         }
     }
 
     public void setName(String name) {
         String s = this.getName();
-        this.name.set(name);
         try {
+            this.name.set(name);
+            clientEntity.setName(name);
             this.updateEntity();
         }catch (Exception e){
+            e.printStackTrace();
             this.name.set(s);
+            clientEntity.setName(s);
         }
     }
 
     public void setSurname(String surname) {
         String s = this.getSurname();
-        this.surname.set(surname);
         try {
+            this.surname.set(surname);
+            clientEntity.setSurname(surname);
             this.updateEntity();
         }catch (Exception e){
             this.surname.set(s);
+            clientEntity.setSurname(s);
         }
     }
 
     public void setPhone(String phone) {
         String s = this.getPhone();
-        this.phone.set(phone);
         try {
+            this.phone.set(phone);
+            clientEntity.setPhone(phone);
             this.updateEntity();
         }catch (Exception e){
             this.phone.set(s);
+            clientEntity.setPhone(s);
         }
     }
 
     public void setPhone2(String phone2) {
         String s = this.getPhone2();
-        this.phone2.set(phone2);
-        this.updateEntity();
         try {
+            this.phone2.set(phone2);
+            clientEntity.setPhone2(phone2);
             this.updateEntity();
         }catch (Exception e){
             this.phone2.set(s);
+            clientEntity.setPhone2(s);
         }
     }
 
     public void setAdress(String adress) {
         String s = getAdress();
-        this.adress.set(adress);
-        this.updateEntity();
         try {
+            this.adress.set(adress);
+            clientEntity.setAdress(adress);
             this.updateEntity();
         }catch (Exception e){
             this.adress.set(s);
+            clientEntity.setAdress(s);
         }
     }
 
     public void setEmail(String email) {
         String s = getEmail();
-        this.email.set(email);
-        this.updateEntity();
         try {
+            this.email.set(email);
+            clientEntity.setEmail(email);
             this.updateEntity();
         }catch (Exception e){
             this.email.set(s);
+            clientEntity.setEmail(s);
         }
+    }
+
+    public ClientEntity getClientEntity() {
+        return clientEntity;
+    }
+
+    public void setClientEntity(ClientEntity clientEntity) {
+        this.clientEntity = clientEntity;
     }
 
     private void updateEntity(){
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.update(new ClientEntity(id,name,surname,phone,phone2,adress,email));
+        session.update(clientEntity);
         session.getTransaction().commit();
         session.close();
     }

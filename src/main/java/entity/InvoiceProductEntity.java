@@ -22,11 +22,11 @@ public class InvoiceProductEntity {
 
     public InvoiceProductEntity() {
     }
-
+    @Deprecated
     public InvoiceProductEntity(String id) {
         this.id = Integer.valueOf(id);
     }
-
+    @Deprecated
     public InvoiceProductEntity(SimpleStringProperty id, SimpleStringProperty productName, SimpleStringProperty count, Boolean loaded,InvoiceEntity invoice) {
         this.id = Integer.valueOf(id.get());
         this.count = Integer.valueOf(count.get());

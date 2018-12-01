@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import util.HibernateUtil;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class Request {
 
     private ClientEntity client;
     private ObservableList<RequestProduct> requestsProducts;
+    private ClientRequestEntity requestEntity;
 
     public Request(ClientRequestEntity clientRequest) {
         this.id = new SimpleStringProperty(Integer.toString(clientRequest.getId()));
@@ -30,6 +32,8 @@ public class Request {
         this.checked = clientRequest.getChecked() != 0;
         this.approved = clientRequest.getApproved() != 0;
         this.clientName = createClientName();
+
+        this.requestEntity = clientRequest;
     }
 
     public String getId() {
@@ -42,11 +46,13 @@ public class Request {
 
     public void setId(String id) {
         String s = this.getId();
-        this.id.set(id);
         try {
+            this.id.set(id);
+            requestEntity.setId(Integer.valueOf(id));
             this.updateEntity();
         }catch (Exception e){
             this.id.set(s);
+            requestEntity.setId(Integer.valueOf(s));
         }
     }
 
@@ -60,8 +66,19 @@ public class Request {
 
     public void setClientName(String clientName) {
         String s = this.getClientName();
-        this.clientName.set(clientName);
         try {
+            this.clientName.set(clientName);
+
+            String name = clientName.substring(0, clientName.indexOf(' '));
+            String surname = clientName.substring(clientName.indexOf(' ')+1, clientName.length());
+            String hql = "FROM ClientEntity" +
+                    " WHERE name LIKE '"+ name +"' AND surname LIKE '"+surname+"'";
+            Session session = sessionFactory.openSession();
+            Query query = session.createQuery(hql);
+            ClientEntity result = (ClientEntity) query.list().get(0);
+            session.close();
+
+            requestEntity.setClientByClientId(result);
             this.updateEntity();
         }catch (Exception e){
             this.clientName.set(s);
@@ -78,11 +95,13 @@ public class Request {
 
     public void setRequest(String request) {
         String s = this.getRequest();
-        this.request.set(request);
         try {
+            this.request.set(request);
+            requestEntity.setRequest(request);
             this.updateEntity();
         }catch (Exception e){
             this.request.set(s);
+            requestEntity.setRequest(s);
         }
     }
 
@@ -92,11 +111,13 @@ public class Request {
 
     public void setChecked(Boolean checked) {
         Boolean s = this.getChecked();
-        this.checked = checked;
         try {
+            this.checked = checked;
+            requestEntity.setChecked(new Byte(String.valueOf(checked? 1:0)));
             this.updateEntity();
         }catch (Exception e){
             this.checked = s;
+            requestEntity.setChecked(new Byte(String.valueOf(s? 1:0)));
         }
     }
 
@@ -106,11 +127,13 @@ public class Request {
 
     public void setApproved(Boolean approved) {
         Boolean s = this.getApproved();
-        this.approved = approved;
         try {
+            this.approved = approved;
+            requestEntity.setApproved(new Byte(String.valueOf(approved? 1:0)));
             this.updateEntity();
         }catch (Exception e){
             this.approved = s;
+            requestEntity.setApproved(new Byte(String.valueOf(s? 1:0)));
         }
     }
 
@@ -133,7 +156,7 @@ public class Request {
     private void updateEntity(){
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.update(new ClientRequestEntity(id,request,checked,approved,clientName));
+        session.update(requestEntity);
         session.getTransaction().commit();
         session.close();
     }
@@ -144,5 +167,13 @@ public class Request {
         }catch (NullPointerException e){
             return new SimpleStringProperty("");
         }
+    }
+
+    public ClientRequestEntity getRequestEntity() {
+        return requestEntity;
+    }
+
+    public void setRequestEntity(ClientRequestEntity requestEntity) {
+        this.requestEntity = requestEntity;
     }
 }

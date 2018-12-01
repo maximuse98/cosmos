@@ -17,11 +17,11 @@ public class ClientEntity {
 
     public ClientEntity() {
     }
-
-    public ClientEntity(String id) {
+    @Deprecated
+    public ClientEntity(String id){
         this.id = Integer.valueOf(id);
     }
-
+    @Deprecated
     public ClientEntity(SimpleStringProperty id, SimpleStringProperty name, SimpleStringProperty surname, SimpleStringProperty phone, SimpleStringProperty phone2, SimpleStringProperty adress, SimpleStringProperty email) {
         this.id = Integer.valueOf(id.get());
         this.name = name.get();

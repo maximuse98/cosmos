@@ -26,11 +26,11 @@ public class InvoiceEntity {
 
     public InvoiceEntity() {
     }
-
+    @Deprecated
     public InvoiceEntity(String id) {
         this.id = Integer.valueOf(id);
     }
-
+    @Deprecated
     public InvoiceEntity(SimpleStringProperty id, Boolean agreed, SimpleStringProperty dateCreate, SimpleStringProperty contractName) throws ParseException {
         this.id = Integer.valueOf(id.get());
         this.agreed = new Byte(String.valueOf(agreed? 1:0));

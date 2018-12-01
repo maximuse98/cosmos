@@ -3,9 +3,11 @@ package models;
 import entity.ClientOrderEntity;
 import entity.InvoiceProductEntity;
 import entity.OrderProductEntity;
+import entity.ProductEntity;
 import javafx.beans.property.SimpleStringProperty;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import util.HibernateUtil;
 
 public class OrderProduct {
@@ -14,6 +16,7 @@ public class OrderProduct {
     private SimpleStringProperty count;
     private SimpleStringProperty rest;
     private ClientOrderEntity order;
+    private OrderProductEntity orderProduct;
 
     private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
@@ -23,6 +26,8 @@ public class OrderProduct {
         this.count = createCount(orderProduct.getCount());
         this.rest = createCount(orderProduct.getRest());
         this.order = orderProduct.getClientOrderByOrderId();
+
+        this.orderProduct = orderProduct;
     }
 
     public String getId() {
@@ -35,12 +40,14 @@ public class OrderProduct {
 
     public void setId(String id) {
         String s = this.getId();
-        this.id.set(id);
         try {
+            this.id.set(id);
+            orderProduct.setId(Integer.valueOf(id));
             this.updateEntity();
         }
         catch (Exception e){
             this.id.set(s);
+            orderProduct.setId(Integer.valueOf(s));
         }
     }
 
@@ -54,8 +61,17 @@ public class OrderProduct {
 
     public void setProductName(String productName) {
         String s = this.getProductName();
-        this.productName.set(productName);
         try {
+            this.productName.set(productName);
+
+            String hql = " FROM ProductEntity " +
+                    " WHERE name LIKE '" + productName + "'";
+            Session session = sessionFactory.openSession();
+            Query query = session.createQuery(hql);
+            ProductEntity result = (ProductEntity) query.list().get(0);
+            session.close();
+
+            orderProduct.setProductByProductId(result);
             this.updateEntity();
         }
         catch (Exception e){
@@ -73,13 +89,14 @@ public class OrderProduct {
 
     public void setCount(String count) {
         String s = this.getCount();
-        this.count.set(count);
         try {
+            this.count.set(count);
+            orderProduct.setCount(Integer.valueOf(count));
             this.updateEntity();
         }
         catch (Exception e){
-            e.printStackTrace();
             this.count.set(s);
+            orderProduct.setCount(Integer.valueOf(s));
         }
     }
 
@@ -93,19 +110,21 @@ public class OrderProduct {
 
     public void setRest(String rest) {
         String s = this.getRest();
-        this.rest.set(rest);
         try {
+            this.rest.set(rest);
+            orderProduct.setRest(Integer.valueOf(rest));
             this.updateEntity();
         }
         catch (Exception e){
             this.rest.set(s);
+            orderProduct.setRest(Integer.valueOf(s));
         }
     }
 
     private void updateEntity(){
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.update(new OrderProductEntity(id,count,rest,productName,order));
+        session.update(orderProduct);
         session.getTransaction().commit();
         session.close();
     }
@@ -116,5 +135,13 @@ public class OrderProduct {
         }catch (NullPointerException e){
             return new SimpleStringProperty("");
         }
+    }
+
+    public OrderProductEntity getOrderProduct() {
+        return orderProduct;
+    }
+
+    public void setOrderProduct(OrderProductEntity orderProduct) {
+        this.orderProduct = orderProduct;
     }
 }

@@ -24,8 +24,11 @@ public class Invoice {
     private SimpleStringProperty contractName;
 
     private ObservableList<InvoiceProduct> invoiceProducts;
+    private InvoiceEntity invoiceEntity;
 
     private SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+    private SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-mm-dd");
+    private SimpleDateFormat dt2 = new SimpleDateFormat("dd.mm.yyyy");
     private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
     public Invoice(InvoiceEntity invoice) {
@@ -34,6 +37,8 @@ public class Invoice {
         this.order = invoice.getClientOrderByOrderId();
         this.contractName = createContract();
         this.agreed = invoice.getAgreed()!=0;
+
+        this.invoiceEntity = invoice;
     }
 
     public ObservableList<InvoiceProduct> getInvoiceProducts() {
@@ -52,13 +57,15 @@ public class Invoice {
         return dateCreate;
     }
 
-    public void setDateCreate(String dateCreate) {
+    public void setDateCreate(String dateCreate) throws ParseException {
         String s = this.getDateCreate();
-        this.dateCreate.set(dateCreate);
         try {
+            this.dateCreate.set(dateCreate);
+            invoiceEntity.setDateCreate(dt1.parse(dt1.format(dt2.parse(dateCreate))));
             this.updateEntity();
         } catch (Exception e) {
             this.dateCreate.set(s);
+            invoiceEntity.setDateCreate(dt1.parse(dt1.format(dt2.parse(s))));
         }
     }
 
@@ -70,9 +77,12 @@ public class Invoice {
         Boolean s = this.getAgreed();
         this.agreed = agreed;
         try {
+            this.agreed = agreed;
+            invoiceEntity.setAgreed(new Byte(String.valueOf(agreed? 1:0)));
             this.updateEntity();
         } catch (ParseException e) {
             this.agreed = s;
+            invoiceEntity.setAgreed(new Byte(String.valueOf(s? 1:0)));
         }
     }
 
@@ -86,11 +96,13 @@ public class Invoice {
 
     public void setId(String id) {
         String s = this.getId();
-        this.id.set(id);
         try {
+            this.id.set(id);
+            invoiceEntity.setId(Integer.valueOf(id));
             this.updateEntity();
         } catch (ParseException e) {
             this.id.set(s);
+            invoiceEntity.setId(Integer.valueOf(s));
         }
     }
 
@@ -106,8 +118,19 @@ public class Invoice {
         String s = this.getContractName();
         this.contractName.set(contractName);
         try {
+            this.contractName.set(contractName);
+
+            String hql = "FROM ClientOrderEntity " +
+                    " WHERE contract LIKE '"+ contractName+"'";
+            Session session = sessionFactory.openSession();
+            Query query = session.createQuery(hql);
+            ClientOrderEntity result = (ClientOrderEntity) query.list().get(0);
+            session.close();
+
+            invoiceEntity.setClientOrderByOrderId(result);
+
             this.updateEntity();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             this.contractName.set(s);
         }
     }
@@ -115,7 +138,7 @@ public class Invoice {
     private void updateEntity() throws ParseException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.update(new InvoiceEntity(id,agreed,dateCreate,contractName));
+        session.update(invoiceEntity);
         session.getTransaction().commit();
         session.close();
     }
@@ -135,5 +158,13 @@ public class Invoice {
         }catch (NullPointerException e){
             return new SimpleStringProperty("");
         }
+    }
+
+    public InvoiceEntity getInvoiceEntity() {
+        return invoiceEntity;
+    }
+
+    public void setInvoiceEntity(InvoiceEntity invoiceEntity) {
+        this.invoiceEntity = invoiceEntity;
     }
 }

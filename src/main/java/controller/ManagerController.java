@@ -26,6 +26,7 @@ import util.HibernateUtil;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.*;
 
 public class ManagerController implements Initializable {
@@ -293,6 +294,9 @@ public class ManagerController implements Initializable {
                     ProductEntity product = invoiceProduct.getProductByProductId();
                     invoiceProducts.add(new InvoiceProduct(invoiceProduct, product.getName()));
                 }
+                else {
+                    invoiceProducts.add(new InvoiceProduct(invoiceProduct, ""));
+                }
             }
             Invoice invoice = new Invoice(invoiceEntity);
             invoice.setInvoiceProducts(invoiceProducts);
@@ -337,8 +341,8 @@ public class ManagerController implements Initializable {
     }
     public void onInvoiceTableClick(){
         invoiceProductFilter.setText("");
-        Invoice selectedRequest = (Invoice) invoiceTable.getSelectionModel().getSelectedItem();
-        invoiceProducts = selectedRequest.getInvoiceProducts();
+        Invoice selectedInvoice = (Invoice) invoiceTable.getSelectionModel().getSelectedItem();
+        invoiceProducts = selectedInvoice.getInvoiceProducts();
         if(!invoiceProducts.isEmpty()){
             invoiceProductTable.setItems(invoiceProducts);
             this.setInvoiceProductFilter();
@@ -367,14 +371,10 @@ public class ManagerController implements Initializable {
     public void onInvoiceProductAddClick(){
         Invoice selectedRequest = (Invoice) invoiceTable.getSelectionModel().getSelectedItem();
 
-        Session session1 = sessionFactory.openSession();
-        Query query = session1.createQuery(" FROM InvoiceEntity WHERE id="+selectedRequest.getId());
-        InvoiceEntity result = (InvoiceEntity) query.list().get(0);
-
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         InvoiceProductEntity invoiceProductEntity = new InvoiceProductEntity();
-        invoiceProductEntity.setInvoiceByInvoiceId(result);
+        invoiceProductEntity.setInvoiceByInvoiceId(selectedRequest.getInvoiceEntity());
         session.save(invoiceProductEntity);
         session.getTransaction().commit();
         session.close();
@@ -393,14 +393,10 @@ public class ManagerController implements Initializable {
     public void onOrderProductAddClick(){
         Order selectedOrder = (Order) orderTable.getSelectionModel().getSelectedItem();
 
-        Session session1 = sessionFactory.openSession();
-        Query query = session1.createQuery(" FROM ClientOrderEntity WHERE id="+selectedOrder.getId());
-        ClientOrderEntity result = (ClientOrderEntity) query.list().get(0);
-
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         OrderProductEntity orderProductEntity = new OrderProductEntity();
-        orderProductEntity.setClientOrderByOrderId(result);
+        orderProductEntity.setClientOrderByOrderId(selectedOrder.getOrder());
         session.save(orderProductEntity);
         session.getTransaction().commit();
         session.close();
@@ -419,14 +415,10 @@ public class ManagerController implements Initializable {
     public void onRequestProductAddClick(){
         Request selectedRequest = (Request) requestTable.getSelectionModel().getSelectedItem();
 
-        Session session1 = sessionFactory.openSession();
-        Query query = session1.createQuery(" FROM ClientRequestEntity WHERE id="+selectedRequest.getId());
-        ClientRequestEntity result = (ClientRequestEntity) query.list().get(0);
-
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         RequestProductEntity orderProductEntity = new RequestProductEntity();
-        orderProductEntity.setClientRequestByRequestId(result);
+        orderProductEntity.setClientRequestByRequestId(selectedRequest.getRequestEntity());
         session.save(orderProductEntity);
         session.getTransaction().commit();
         session.close();
@@ -470,7 +462,7 @@ public class ManagerController implements Initializable {
 
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.delete(new ClientEntity(selected.getId()));
+        session.delete(selected.getClientEntity());
         session.getTransaction().commit();
         session.close();
 
@@ -485,14 +477,14 @@ public class ManagerController implements Initializable {
 
             Session session1 = sessionFactory.openSession();
             session1.beginTransaction();
-            session1.delete(new RequestProductEntity(next.getId()));
+            session1.delete(next.getRequestProduct());
             session1.getTransaction().commit();
             session1.close();
         }
 
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.delete(new ClientRequestEntity(selected.getId()));
+        session.delete(selected.getRequestEntity());
         session.getTransaction().commit();
         session.close();
 
@@ -504,7 +496,7 @@ public class ManagerController implements Initializable {
         try {
             Session session = sessionFactory.openSession();
             session.beginTransaction();
-            session.delete(new RequestProductEntity(selected.getId()));
+            session.delete(selected.getRequestProduct());
             session.getTransaction().commit();
             session.close();
         }catch (NullPointerException e){}
@@ -538,14 +530,14 @@ public class ManagerController implements Initializable {
 
             Session session1 = sessionFactory.openSession();
             session1.beginTransaction();
-            session1.delete(new OrderProductEntity(next.getId()));
+            session1.delete(next.getOrderProduct());
             session1.getTransaction().commit();
             session1.close();
         }
 
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.delete(new ClientOrderEntity(selected.getId()));
+        session.delete(selected.getOrder());
         session.getTransaction().commit();
         session.close();
 
@@ -557,7 +549,7 @@ public class ManagerController implements Initializable {
 
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.delete(new OrderProductEntity(selected.getId()));
+        session.delete(selected.getOrderProduct());
         session.getTransaction().commit();
         session.close();
 
@@ -573,14 +565,14 @@ public class ManagerController implements Initializable {
 
             Session session1 = sessionFactory.openSession();
             session1.beginTransaction();
-            session1.delete(new InvoiceProductEntity(next.getId()));
+            session1.delete(next.getInvoiceProductEntity());
             session1.getTransaction().commit();
             session1.close();
         }
 
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.delete(new InvoiceEntity(selected.getId()));
+        session.delete(selected.getInvoiceEntity());
         session.getTransaction().commit();
         session.close();
 
@@ -591,7 +583,7 @@ public class ManagerController implements Initializable {
 
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.delete(new InvoiceProductEntity(selected.getId()));
+        session.delete(selected.getInvoiceProductEntity());
         session.getTransaction().commit();
         session.close();
 
@@ -1024,9 +1016,13 @@ public class ManagerController implements Initializable {
         contractBeginDateColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Order, String>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Order, String> t) {
-                ((Order) t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())
-                ).setBeginDate(t.getNewValue());
+                try {
+                    ((Order) t.getTableView().getItems().get(
+                            t.getTablePosition().getRow())
+                    ).setBeginDate(t.getNewValue());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 refreshContractTable();
             }
         });
@@ -1034,9 +1030,13 @@ public class ManagerController implements Initializable {
         contractEndDateColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Order, String>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Order, String> t) {
-                ((Order) t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())
-                ).setEndDate(t.getNewValue());
+                try {
+                    ((Order) t.getTableView().getItems().get(
+                            t.getTablePosition().getRow())
+                    ).setEndDate(t.getNewValue());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 refreshContractTable();
             }
         });
@@ -1075,9 +1075,13 @@ public class ManagerController implements Initializable {
         invoiceDateCreateColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Invoice, String>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Invoice, String> t) {
-                ((Invoice) t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())
-                ).setDateCreate(t.getNewValue());
+                try {
+                    ((Invoice) t.getTableView().getItems().get(
+                            t.getTablePosition().getRow())
+                    ).setDateCreate(t.getNewValue());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 refreshInvoiceTable();
             }
         });

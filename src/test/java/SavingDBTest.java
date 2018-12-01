@@ -21,84 +21,82 @@ public class SavingDBTest {
     private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
     @Test
-    public void checkClientSet(){
-        ClientEntity clientEntity = new ClientEntity(new SimpleStringProperty("1"),new SimpleStringProperty("name1"),new SimpleStringProperty("surname1"),new SimpleStringProperty( "phone1"),new SimpleStringProperty("phone2"),new SimpleStringProperty("address1"),new SimpleStringProperty("email1"));
+    public void checkClientChange(){
+        ClientEntity clientEntity = new ClientEntity();
+        clientEntity.setId(1);
+        clientEntity.setName("name1");
+        clientEntity.setSurname("surname1");
+
         Client client = new Client(clientEntity);
         client.setName("changedName");
+
         Session session = sessionFactory.openSession();
-        Query query1 = session.createQuery(" FROM ClientEntity WHERE id=1");
+        Query query1 = session.createQuery(" FROM ClientEntity WHERE surname LIKE 'surname1'");
         ClientEntity clientEntity1 = (ClientEntity) query1.list().get(0);
+        session.close();
+
         assertEquals("error", client.getName(), clientEntity1.getName());
-        session.close();
     }
 
     @Test
-    public void checkInvoiceSet(){
-        Session session = sessionFactory.openSession();
-        InvoiceEntity invoiceEntity = new InvoiceEntity(Integer.toString(1));
-        InvoiceProductEntity invoiceProductEntity = new InvoiceProductEntity();
-        invoiceProductEntity.setInvoiceByInvoiceId(invoiceEntity);
-        assertEquals("error", invoiceEntity.getId(), invoiceProductEntity.getInvoiceByInvoiceId().getId());
-        session.close();
-    }
+    public void checkClientAdd(){
+        ClientEntity clientEntity = new ClientEntity();
+        clientEntity.setName("name2");
+        clientEntity.setSurname("surname2");
+        clientEntity.setEmail("");
+        clientEntity.setAdress("");
+        clientEntity.setPhone("");
+        clientEntity.setPhone2("");
 
-    @Test
-    public void checkOrderSet(){
-        Session session = sessionFactory.openSession();
-        ClientOrderEntity clientOrderEntity = new ClientOrderEntity(Integer.toString(1));
-        OrderProductEntity orderProductEntity = new OrderProductEntity(Integer.toString(1));
-        orderProductEntity.setClientOrderByOrderId(clientOrderEntity);
-        assertEquals("error", orderProductEntity.getClientOrderByOrderId().getId(), clientOrderEntity.getId());
-        session.close();
-    }
-
-    @Test
-    public void checkRequestSet(){
-        Session session = sessionFactory.openSession();
-        ClientRequestEntity clientRequestEntity = new ClientRequestEntity(Integer.toString(1));
-        RequestProductEntity requestProductEntity = new RequestProductEntity(Integer.toString(1));
-        requestProductEntity.setClientRequestByRequestId(clientRequestEntity);
-        assertEquals("error", requestProductEntity.getClientRequestByRequestId().getId(), clientRequestEntity.getId());
-        session.close();
-    }
-
-    @Test
-    public void checkProductSet(){
-        ProductEntity productEntity = new ProductEntity();
-        productEntity.setId(1);
-        ObservableList<Product> productsList = FXCollections.observableArrayList();
-        productsList.add(new Product(productEntity));
-        assertEquals("error", productsList.get(0).getId(), Integer.toString(productEntity.getId()));
-
-    }
-
-    @Test
-    public void checkAddClient(){
-        ClientEntity clientEntity = new ClientEntity(new SimpleStringProperty("1"),new SimpleStringProperty("name1"),new SimpleStringProperty("surname1"),new SimpleStringProperty( "phone1"),new SimpleStringProperty("phone2"),new SimpleStringProperty("address1"),new SimpleStringProperty("email1"));
-        clientEntity.setId(1);
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.save(new ClientEntity());
+        session.save(clientEntity);
         session.getTransaction().commit();
-        Query query1 = session.createQuery(" FROM ClientEntity");
-        ClientEntity clientEntity1 = (ClientEntity) query1.list().get(1);
-        //т.к. у нас автоинкремент, то айдишник добавленной сутности будет 1++=2
-        assertTrue("error", clientEntity1.getId()==2);
         session.close();
+
+        Session session2 = sessionFactory.openSession();
+        Query query1 = session2.createQuery(" FROM ClientEntity WHERE name LIKE 'name2' ");
+        ClientEntity clientEntity1 = (ClientEntity) query1.list().get(0);
+        session2.close();
+
+        clientEntity.setId(clientEntity1.getId());//так как у меня автоинкремент, я id заранее не знаю
+
+        assertTrue("error", clientEntity.equals(clientEntity1));
     }
 
+    /**
+     * для срабатывания теста в бд НЕ должно быть клиента с именем "simpleClientName"
+     */
     @Test
-    public void checkAddInvoice(){
-        InvoiceEntity invoiceEntity = new InvoiceEntity(Integer.toString(1));
-        invoiceEntity.setId(1);
+    public void checkClientDelete(){
+        this.addSimpleClient();//клиент добавляется в бд
+
+        Session session1 = sessionFactory.openSession();
+        Query query1 = session1.createQuery(" FROM ClientEntity WHERE name LIKE 'simpleClientName'");
+        ClientEntity clientEntity1 = (ClientEntity) query1.list().get(0);
+
+        Client client = new Client(clientEntity1);
+
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.save(new InvoiceEntity());
+        session.delete(client.getClientEntity());
         session.getTransaction().commit();
-        Query query1 = session.createQuery(" FROM InvoiceEntity");
-        InvoiceEntity invoiceEntity1 = (InvoiceEntity) query1.list().get(1);
-        //т.к. у нас автоинкремент, то айдишник добавленной сутности будет 1++=2
-        assertTrue("error", invoiceEntity1.getId()==2);
+        session.close();
+
+        Session session2 = sessionFactory.openSession();
+        Query query2 = session2.createQuery(" FROM ClientEntity WHERE name LIKE '"+client.getName()+"'");
+        assertTrue("error",query2.list().isEmpty());
+        session2.close();
+    }
+
+    public void addSimpleClient(){
+        ClientEntity clientEntity = new ClientEntity();
+        clientEntity.setName("simpleClientName");
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(clientEntity);
+        session.getTransaction().commit();
         session.close();
     }
 }

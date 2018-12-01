@@ -21,11 +21,11 @@ public class ClientRequestEntity {
 
     public ClientRequestEntity() {
     }
-
+    @Deprecated
     public ClientRequestEntity(String id) {
         this.id = Integer.valueOf(id);
     }
-
+    @Deprecated
     public ClientRequestEntity(SimpleStringProperty id, SimpleStringProperty request, Boolean checked, Boolean approved, SimpleStringProperty clientName) {
         this.id = Integer.valueOf(id.get());
         this.request = request.get();

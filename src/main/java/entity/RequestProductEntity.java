@@ -20,11 +20,11 @@ public class RequestProductEntity {
 
     public RequestProductEntity() {
     }
-
+    @Deprecated
     public RequestProductEntity(String id) {
         this.id = Integer.valueOf(id);
     }
-
+    @Deprecated
     public RequestProductEntity(SimpleStringProperty id, SimpleStringProperty count, SimpleStringProperty productName, ClientRequestEntity request) {
         this.id = Integer.valueOf(id.get());
         this.count = Integer.valueOf(count.get());

@@ -2,9 +2,11 @@ package models;
 
 import entity.InvoiceEntity;
 import entity.InvoiceProductEntity;
+import entity.ProductEntity;
 import javafx.beans.property.SimpleStringProperty;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import util.HibernateUtil;
 
 public class InvoiceProduct {
@@ -14,6 +16,8 @@ public class InvoiceProduct {
     private Boolean loaded;
     private InvoiceEntity invoice;
 
+    private InvoiceProductEntity invoiceProductEntity;
+
     private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
     public InvoiceProduct(InvoiceProductEntity invoiceProduct, String productName) {
@@ -22,6 +26,8 @@ public class InvoiceProduct {
         this.count = createCount(invoiceProduct.getCount());
         this.loaded = invoiceProduct.getLoaded()!=0;
         this.invoice = invoiceProduct.getInvoiceByInvoiceId();
+
+        this.invoiceProductEntity = invoiceProduct;
     }
 
     public String getId() {
@@ -34,11 +40,13 @@ public class InvoiceProduct {
 
     public void setId(String id) {
         String s = this.getId();
-        this.id.set(id);
         try {
+            this.id.set(id);
+            invoiceProductEntity.setId(Integer.valueOf(id));
             this.updateEntity();
         }catch (Exception e) {
             this.id.set(s);
+            invoiceProductEntity.setId(Integer.valueOf(s));
         }
     }
 
@@ -52,8 +60,17 @@ public class InvoiceProduct {
 
     public void setProductName(String productName) {
         String s = this.getProductName();
-        this.productName.set(productName);
         try {
+            this.productName.set(productName);
+
+            String hql = " FROM ProductEntity " +
+                    " WHERE name LIKE '"+ productName+"'";
+            Session session = sessionFactory.openSession();
+            Query query = session.createQuery(hql);
+            ProductEntity result = (ProductEntity) query.list().get(0);
+            session.close();
+
+            invoiceProductEntity.setProductByProductId(result);
             this.updateEntity();
         }catch (Exception e) {
             this.productName.set(s);
@@ -70,11 +87,13 @@ public class InvoiceProduct {
 
     public void setCount(String count) {
         String s = this.getCount();
-        this.count.set(count);
         try {
+            this.count.set(count);
+            invoiceProductEntity.setCount(Integer.valueOf(count));
             this.updateEntity();
         }catch (Exception e) {
             this.count.set(s);
+            invoiceProductEntity.setCount(Integer.valueOf(s));
         }
     }
 
@@ -84,18 +103,20 @@ public class InvoiceProduct {
 
     public void setLoaded(Boolean loaded) {
         Boolean s = this.getLoaded();
-        this.loaded = loaded;
         try {
+            this.loaded = loaded;
+            invoiceProductEntity.setLoaded(new Byte(String.valueOf(loaded? 1:0)));
             this.updateEntity();
         }catch (Exception e) {
             this.loaded = s;
+            invoiceProductEntity.setLoaded(new Byte(String.valueOf(s? 1:0)));
         }
     }
 
     private void updateEntity(){
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.update(new InvoiceProductEntity(id,productName,count,loaded,invoice));
+        session.update(invoiceProductEntity);
         session.getTransaction().commit();
         session.close();
     }
@@ -106,5 +127,13 @@ public class InvoiceProduct {
         }catch (NullPointerException e){
             return new SimpleStringProperty("");
         }
+    }
+
+    public InvoiceProductEntity getInvoiceProductEntity() {
+        return invoiceProductEntity;
+    }
+
+    public void setInvoiceProductEntity(InvoiceProductEntity invoiceProductEntity) {
+        this.invoiceProductEntity = invoiceProductEntity;
     }
 }

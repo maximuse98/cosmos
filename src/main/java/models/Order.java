@@ -27,6 +27,8 @@ public class Order {
     private ClientOrderEntity order;
 
     private ObservableList<OrderProduct> ordersProducts;
+    private SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-mm-dd");
+    private SimpleDateFormat dt2 = new SimpleDateFormat("dd.mm.yyyy");
 
     private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
     private SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
@@ -70,11 +72,13 @@ public class Order {
 
     public void setId(String id) {
         String s = this.getId();
-        this.id.set(id);
         try {
+            this.id.set(id);
+            order.setId(Integer.valueOf(id));
             this.updateEntity();
         } catch (ParseException e) {
             this.id.set(s);
+            order.setId(Integer.valueOf(s));
         }
     }
 
@@ -86,12 +90,23 @@ public class Order {
         return clientName;
     }
 
-    public void setClientName(String clientName) {
+    public void setClientName(String client) {
         String s = this.getClientName();
-        this.clientName.set(clientName);
         try {
+            this.clientName.set(client);
+
+            String name = client.substring(0, client.indexOf(' '));
+            String surname = client.substring(client.indexOf(' ') + 1, client.length());
+
+            String hql1 = "FROM ClientEntity" +
+                    " WHERE name LIKE '" + name + "' AND surname LIKE '" + surname + "'";
+            Session session1 = sessionFactory.openSession();
+            Query query1 = session1.createQuery(hql1);
+            ClientEntity result = (ClientEntity) query1.list().get(0);
+
+            order.setClientByClientId(result);
             this.updateEntity();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             this.clientName.set(s);
         }
     }
@@ -109,8 +124,16 @@ public class Order {
         String s = this.getRequestName();
         this.requestName.set(requestName);
         try {
+            String hql = "FROM ClientRequestEntity" +
+                    " WHERE request LIKE '"+requestName+"'";
+            Session session = sessionFactory.openSession();
+            Query query = session.createQuery(hql);
+            ClientRequestEntity result = (ClientRequestEntity) query.list().get(0);
+            session.close();
+
+            order.setRequestId(result.getId());
             this.updateEntity();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             this.requestName.set(s);
         }
     }
@@ -125,8 +148,9 @@ public class Order {
 
     public void setContractName(String contratName) {
         String s = this.getContractName();
-        this.contractName.set(contratName);
         try {
+            this.contractName.set(contratName);
+            order.setContract(contratName);
             this.updateEntity();
         } catch (ParseException e) {
             this.contractName.set(s);
@@ -139,8 +163,9 @@ public class Order {
 
     public void setPayment(Boolean payment) {
         Boolean s = this.getPayment();
-        this.payment = payment;
         try {
+            this.payment = payment;
+            order.setPayment(new Byte(String.valueOf(payment? 1:0)));
             this.updateEntity();
         } catch (ParseException e) {
             this.payment = s;
@@ -155,13 +180,15 @@ public class Order {
         return beginDate;
     }
 
-    public void setBeginDate(String beginDate) {
+    public void setBeginDate(String beginDate) throws ParseException {
         String s = this.getBeginDate();
-        this.beginDate.set(beginDate);
         try {
+            this.beginDate.set(beginDate);
+            order.setBeginDate(dt1.parse(dt1.format(dt2.parse(beginDate))));
             this.updateEntity();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             this.beginDate.set(s);
+            order.setBeginDate(dt1.parse(dt1.format(dt2.parse(s))));
         }
     }
 
@@ -173,13 +200,15 @@ public class Order {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(String endDate) throws ParseException {
         String s = this.getEndDate();
-        this.endDate.set(endDate);
         try {
+            this.endDate.set(endDate);
+            order.setEndDate(dt1.parse(dt1.format(dt2.parse(endDate))));
             this.updateEntity();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             this.endDate.set(s);
+            order.setEndDate(dt1.parse(dt1.format(dt2.parse(s))));
         }
     }
 
@@ -194,7 +223,7 @@ public class Order {
     private void updateEntity() throws ParseException {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.update(new ClientOrderEntity(id,requestName,contractName,clientName,beginDate,endDate,payment));
+        session.update(order);
         session.getTransaction().commit();
         session.close();
     }
