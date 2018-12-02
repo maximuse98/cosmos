@@ -5,10 +5,16 @@ import entity.InvoiceProductEntity;
 import entity.OrderProductEntity;
 import entity.ProductEntity;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import util.HibernateUtil;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class OrderProduct {
     private SimpleStringProperty id;
@@ -17,6 +23,7 @@ public class OrderProduct {
     private SimpleStringProperty rest;
     private ClientOrderEntity order;
     private OrderProductEntity orderProduct;
+    private ProductEntity productEntity;
 
     private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
@@ -25,8 +32,9 @@ public class OrderProduct {
         this.productName = new SimpleStringProperty(productName);
         this.count = createCount(orderProduct.getCount());
         this.rest = createCount(orderProduct.getRest());
-        this.order = orderProduct.getClientOrderByOrderId();
 
+        this.order = orderProduct.getClientOrderByOrderId();
+        this.productEntity = orderProduct.getProductByProductId();
         this.orderProduct = orderProduct;
     }
 
@@ -90,9 +98,16 @@ public class OrderProduct {
     public void setCount(String count) {
         String s = this.getCount();
         try {
+            if(productEntity.getCount()<Integer.valueOf(count)){
+                this.setAlert("На складе недостаточно данного товара");
+                return;
+            }
             this.count.set(count);
             orderProduct.setCount(Integer.valueOf(count));
             this.updateEntity();
+        }
+        catch (NullPointerException f){
+            this.setAlert("Укажите вначале имя товара");
         }
         catch (Exception e){
             this.count.set(s);
@@ -112,8 +127,15 @@ public class OrderProduct {
         String s = this.getRest();
         try {
             this.rest.set(rest);
+            if(Integer.valueOf(count.get())<Integer.valueOf(rest)){
+                this.setAlert("Остаток не может превышать количество");
+                return;
+            }
             orderProduct.setRest(Integer.valueOf(rest));
             this.updateEntity();
+        }
+        catch (NullPointerException f){
+            this.setAlert("Укажите вначале количество товара");
         }
         catch (Exception e){
             this.rest.set(s);
@@ -143,5 +165,16 @@ public class OrderProduct {
 
     public void setOrderProduct(OrderProductEntity orderProduct) {
         this.orderProduct = orderProduct;
+    }
+
+    private void setAlert(String reason){
+        Exception e = new Exception(reason);
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText("Добавление невозможно");
+        alert.getDialogPane().setExpandableContent(new ScrollPane(new TextArea(sw.toString())));
+        alert.showAndWait();
     }
 }

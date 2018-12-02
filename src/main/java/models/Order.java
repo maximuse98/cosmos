@@ -27,8 +27,8 @@ public class Order {
     private ClientOrderEntity order;
 
     private ObservableList<OrderProduct> ordersProducts;
-    private SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-mm-dd");
-    private SimpleDateFormat dt2 = new SimpleDateFormat("dd.mm.yyyy");
+    private SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat dt2 = new SimpleDateFormat("dd.MM.yyyy");
 
     private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
     private SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
@@ -184,11 +184,11 @@ public class Order {
         String s = this.getBeginDate();
         try {
             this.beginDate.set(beginDate);
-            order.setBeginDate(dt1.parse(dt1.format(dt2.parse(beginDate))));
+            order.setBeginDate(dt2.parse(beginDate));
             this.updateEntity();
         } catch (Exception e) {
             this.beginDate.set(s);
-            order.setBeginDate(dt1.parse(dt1.format(dt2.parse(s))));
+            order.setBeginDate(dt2.parse(beginDate));
         }
     }
 
@@ -204,11 +204,11 @@ public class Order {
         String s = this.getEndDate();
         try {
             this.endDate.set(endDate);
-            order.setEndDate(dt1.parse(dt1.format(dt2.parse(endDate))));
+            order.setEndDate(dt2.parse(endDate));
             this.updateEntity();
         } catch (Exception e) {
             this.endDate.set(s);
-            order.setEndDate(dt1.parse(dt1.format(dt2.parse(s))));
+            order.setEndDate(dt2.parse(s));
         }
     }
 

@@ -27,8 +27,8 @@ public class Invoice {
     private InvoiceEntity invoiceEntity;
 
     private SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-    private SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-mm-dd");
-    private SimpleDateFormat dt2 = new SimpleDateFormat("dd.mm.yyyy");
+    private SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat dt2 = new SimpleDateFormat("dd.MM.yyyy");
     private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
     public Invoice(InvoiceEntity invoice) {
@@ -61,11 +61,11 @@ public class Invoice {
         String s = this.getDateCreate();
         try {
             this.dateCreate.set(dateCreate);
-            invoiceEntity.setDateCreate(dt1.parse(dt1.format(dt2.parse(dateCreate))));
+            invoiceEntity.setDateCreate(dt2.parse(dateCreate));
             this.updateEntity();
         } catch (Exception e) {
             this.dateCreate.set(s);
-            invoiceEntity.setDateCreate(dt1.parse(dt1.format(dt2.parse(s))));
+            invoiceEntity.setDateCreate(dt2.parse(s));
         }
     }
 

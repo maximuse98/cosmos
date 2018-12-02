@@ -20,8 +20,8 @@ public class InvoiceEntity {
     private ClientOrderEntity clientOrderByOrderId;
     private int order_id;
 
-    private SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-mm-dd");
-    private SimpleDateFormat dt2 = new SimpleDateFormat("dd.mm.yyyy");
+    private SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat dt2 = new SimpleDateFormat("dd.MM.yyyy");
     private final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 
     public InvoiceEntity() {
@@ -34,7 +34,7 @@ public class InvoiceEntity {
     public InvoiceEntity(SimpleStringProperty id, Boolean agreed, SimpleStringProperty dateCreate, SimpleStringProperty contractName) throws ParseException {
         this.id = Integer.valueOf(id.get());
         this.agreed = new Byte(String.valueOf(agreed? 1:0));
-        if(!dateCreate.get().equals("")){this.dateCreate = dt1.parse(dt1.format(dt2.parse(dateCreate.get())));}
+        if(!dateCreate.get().equals("")){this.dateCreate = dt2.parse(dateCreate.get());}
 
         String hql = "FROM ClientOrderEntity " +
                     " WHERE contract LIKE '"+ contractName.get()+"'";
