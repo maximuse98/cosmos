@@ -27,6 +27,7 @@ public class SavingDBTest {
     private SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
     //change part
+
     @Test
     public void checkClientChange() {
         ClientEntity clientEntity = new ClientEntity();
@@ -371,41 +372,226 @@ public class SavingDBTest {
 
         assertTrue("error", requestProductEntity.equals(requestProductEntity1));
     }
-    /**
-     * для срабатывания теста в бд НЕ должно быть клиента с именем "simpleClientName"
-     */
+
+    //delete part
+
     @Test
     public void checkClientDelete() {
-        this.addSimpleClient();//клиент добавляется в бд
-
-        Session session1 = sessionFactory.openSession();
-        Query query1 = session1.createQuery(" FROM ClientEntity WHERE name LIKE 'simpleClientName'");
-        ClientEntity clientEntity1 = (ClientEntity) query1.list().get(0);
-
-        Client client = new Client(clientEntity1);
-
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.delete(client.getClientEntity());
-        session.getTransaction().commit();
-        session.close();
-
-        Session session2 = sessionFactory.openSession();
-        Query query2 = session2.createQuery(" FROM ClientEntity WHERE name LIKE '" + client.getName() + "'");
-        assertTrue("error", query2.list().isEmpty());
-        session2.close();
-    }
-
-    public void addSimpleClient() {
         ClientEntity clientEntity = new ClientEntity();
         clientEntity.setName("simpleClientName");
 
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.save(clientEntity);
-        session.getTransaction().commit();
-        session.close();
+        Session session1 = sessionFactory.openSession();
+        session1.beginTransaction();
+        session1.save(clientEntity);
+        session1.getTransaction().commit();
+        session1.close();
+        //клиент добавляется в бд
+
+        Session session2 = sessionFactory.openSession();
+        Query query1 = session2.createQuery(" FROM ClientEntity WHERE name LIKE 'simpleClientName'");
+        ClientEntity clientEntity1 = (ClientEntity) query1.list().get(0);
+        session2.close();
+
+        Client client = new Client(clientEntity1);
+
+        Session session3 = sessionFactory.openSession();
+        session3.beginTransaction();
+        session3.delete(client.getClientEntity());
+        session3.getTransaction().commit();
+        session3.close();
+
+        Session session4 = sessionFactory.openSession();
+        Query query2 = session4.createQuery(" FROM ClientEntity WHERE name LIKE '" + client.getName() + "'");
+        assertTrue("error", query2.list().isEmpty());
+        session4.close();
     }
 
+    @Test
+    public void checkInvoiceDelete(){
+        ClientOrderEntity clientOrderEntity = new ClientOrderEntity();
+        clientOrderEntity.setId(6);
 
+        InvoiceEntity invoiceEntity = new InvoiceEntity();
+        invoiceEntity.setClientOrderByOrderId(clientOrderEntity);
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(invoiceEntity);
+        session.getTransaction().commit();
+        session.close();
+
+        Session session1 = sessionFactory.openSession();
+        Query query1 = session1.createQuery(" FROM InvoiceEntity WHERE clientOrderByOrderId=" + invoiceEntity.getClientOrderByOrderId().getId());
+        InvoiceEntity invoiceEntity1 = (InvoiceEntity) query1.list().get(0);
+        session1.close();
+
+        Invoice invoice = new Invoice(invoiceEntity1);
+
+        Session session2 = sessionFactory.openSession();
+        session2.beginTransaction();
+        session2.delete(invoice.getInvoiceEntity());
+        session2.getTransaction().commit();
+        session2.close();
+
+        Session session3 = sessionFactory.openSession();
+        Query query2 = session3.createQuery(" FROM InvoiceEntity WHERE clientOrderByOrderId=" + invoice.getOrder().getId());
+        assertTrue("error", query2.list().isEmpty());
+        session3.close();
+    }
+
+    @Test
+    public void InvoiceProductDelete(){
+        InvoiceEntity invoiceEntity = new InvoiceEntity();
+        invoiceEntity.setId(14);
+
+        InvoiceProductEntity invoiceProductEntity = new InvoiceProductEntity();
+        invoiceProductEntity.setInvoiceByInvoiceId(invoiceEntity);
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(invoiceProductEntity);
+        session.getTransaction().commit();
+        session.close();
+
+        Session session1 = sessionFactory.openSession();
+        Query query1 = session1.createQuery(" FROM InvoiceProductEntity WHERE invoiceByInvoiceId=" + invoiceProductEntity.getInvoiceByInvoiceId().getId());
+        InvoiceProductEntity invoiceProductEntity1 = (InvoiceProductEntity) query1.list().get(0);
+
+        InvoiceProduct invoiceProduct = new InvoiceProduct(invoiceProductEntity1,"productNAme");
+
+        Session session2 = sessionFactory.openSession();
+        session2.beginTransaction();
+        session2.delete(invoiceProduct.getInvoiceProductEntity());
+        session2.getTransaction().commit();
+        session2.close();
+
+        Session session3 = sessionFactory.openSession();
+        Query query2 = session3.createQuery(" FROM InvoiceProductEntity WHERE invoiceByInvoiceId=" + invoiceProduct.getInvoiceProductEntity().getId());
+        assertTrue("error", query2.list().isEmpty());
+        session3.close();
+    }
+
+    @Test
+    public void OrderDelete(){
+        ClientOrderEntity clientOrderEntity = new ClientOrderEntity();
+        clientOrderEntity.setContract("SimpleContractName");
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(clientOrderEntity);
+        session.getTransaction().commit();
+        session.close();
+
+        Session session1 = sessionFactory.openSession();
+        Query query1 = session1.createQuery(" FROM ClientOrderEntity WHERE contract LIKE 'SimpleContractName'");
+        ClientOrderEntity clientOrderEntity1 = (ClientOrderEntity) query1.list().get(0);
+        session1.close();
+
+        Order order = new Order(clientOrderEntity1);
+
+        Session session2 = sessionFactory.openSession();
+        session2.beginTransaction();
+        session2.delete(order.getOrder());
+        session2.getTransaction().commit();
+        session2.close();
+
+        Session session3 = sessionFactory.openSession();
+        Query query2 = session3.createQuery(" FROM ClientOrderEntity WHERE contract LIKE '" + order.getContractName() + "'");
+        assertTrue("error", query2.list().isEmpty());
+        session3.close();
+    }
+
+    @Test
+    public void OrderProductDelete(){
+        ClientOrderEntity clientOrderEntity = new ClientOrderEntity();
+        clientOrderEntity.setId(6);
+
+        OrderProductEntity orderProductEntity = new OrderProductEntity();
+        orderProductEntity.setClientOrderByOrderId(clientOrderEntity);
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(orderProductEntity);
+        session.getTransaction().commit();
+        session.close();
+
+        Session session1 = sessionFactory.openSession();
+        Query query1 = session1.createQuery(" FROM OrderProductEntity WHERE clientOrderByOrderId=" + orderProductEntity.getClientOrderByOrderId().getId());
+        OrderProductEntity orderProductEntity1 = (OrderProductEntity) query1.list().get(0);
+
+        OrderProduct orderProduct = new OrderProduct(orderProductEntity1, "someProductName");
+
+        Session session2 = sessionFactory.openSession();
+        session2.beginTransaction();
+        session2.delete(orderProduct.getOrderProduct());
+        session2.getTransaction().commit();
+        session2.close();
+
+        Session session3 = sessionFactory.openSession();
+        Query query2 = session3.createQuery(" FROM OrderProductEntity WHERE clientOrderByOrderId=" + orderProduct.getOrder().getId());
+        assertTrue("error", query2.list().isEmpty());
+        session3.close();
+    }
+
+    @Test
+    public void RequestDelete(){
+        ClientRequestEntity clientRequestEntity = new ClientRequestEntity();
+        clientRequestEntity.setRequest("simpleRequestName");
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(clientRequestEntity);
+        session.getTransaction().commit();
+        session.close();
+
+        Session session1 = sessionFactory.openSession();
+        Query query1 = session1.createQuery(" FROM ClientRequestEntity WHERE request LIKE 'simpleRequestName'");
+        ClientRequestEntity clientRequestEntity1 = (ClientRequestEntity) query1.list().get(0);
+        session1.close();
+
+        Request request = new Request(clientRequestEntity1);
+
+        Session session2 = sessionFactory.openSession();
+        session2.beginTransaction();
+        session2.delete(request.getRequestEntity());
+        session2.getTransaction().commit();
+        session2.close();
+
+        Session session3 = sessionFactory.openSession();
+        Query query2 = session3.createQuery(" FROM ClientRequestEntity WHERE request LIKE '" + request.getRequest() + "'");
+        assertTrue("error", query2.list().isEmpty());
+        session3.close();
+    }
+
+    @Test
+    public void RequestProductDelete(){
+        ClientRequestEntity clientRequestEntity = new ClientRequestEntity();
+        clientRequestEntity.setId(3);
+
+        RequestProductEntity requestProductEntity = new RequestProductEntity();
+        requestProductEntity.setClientRequestByRequestId(clientRequestEntity);
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(requestProductEntity);
+        session.getTransaction().commit();
+        session.close();
+
+        Session session1 = sessionFactory.openSession();
+        Query query1 = session1.createQuery(" FROM RequestProductEntity WHERE clientRequestByRequestId=" + requestProductEntity.getClientRequestByRequestId().getId());
+        RequestProductEntity requestProductEntity1 = (RequestProductEntity) query1.list().get(0);
+
+        RequestProduct requestProduct = new RequestProduct(requestProductEntity1, "someProductName");
+
+        Session session2 = sessionFactory.openSession();
+        session2.beginTransaction();
+        session2.delete(requestProduct.getRequestProduct());
+        session2.getTransaction().commit();
+        session2.close();
+
+        Session session3 = sessionFactory.openSession();
+        Query query2 = session3.createQuery(" FROM RequestProductEntity WHERE clientRequestByRequestId=" + requestProduct.getRequestProduct().getId());
+        assertTrue("error", query2.list().isEmpty());
+        session3.close();
+    }
 }
