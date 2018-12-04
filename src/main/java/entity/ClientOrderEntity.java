@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 
 @Entity
 @Table(name = "client_order", schema = "cosmos")
@@ -70,6 +71,8 @@ public class ClientOrderEntity {
     public int getId() {
         return id;
     }
+
+
 
     public void setId(int id) {
         this.id = id;
@@ -136,5 +139,40 @@ public class ClientOrderEntity {
 
     public void setClientByClientId(ClientEntity clientByClientId) {
         this.clientByClientId = clientByClientId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ClientOrderEntity that = (ClientOrderEntity) o;
+
+        if (id != that.id) return false;
+        if (requestId != null ? !requestId.equals(that.requestId) : that.requestId != null) return false;
+        if (clientByClientId != null ? !clientByClientId.equals(that.clientByClientId) : that.clientByClientId != null)
+            return false;
+        if (contract != null ? !contract.equals(that.contract) : that.contract != null) return false;
+        if (beginDate != null ? !beginDate.equals(that.beginDate) : that.beginDate != null) return false;
+        if (endDate != null ? !endDate.equals(that.endDate) : that.endDate != null) return false;
+        if (payment != null ? !payment.equals(that.payment) : that.payment != null) return false;
+        if (dt1 != null ? !dt1.equals(that.dt1) : that.dt1 != null) return false;
+        if (dt2 != null ? !dt2.equals(that.dt2) : that.dt2 != null) return false;
+        return sessionFactory != null ? sessionFactory.equals(that.sessionFactory) : that.sessionFactory == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (requestId != null ? requestId.hashCode() : 0);
+        result = 31 * result + (clientByClientId != null ? clientByClientId.hashCode() : 0);
+        result = 31 * result + (contract != null ? contract.hashCode() : 0);
+        result = 31 * result + (beginDate != null ? beginDate.hashCode() : 0);
+        result = 31 * result + (endDate != null ? endDate.hashCode() : 0);
+        result = 31 * result + (payment != null ? payment.hashCode() : 0);
+        result = 31 * result + (dt1 != null ? dt1.hashCode() : 0);
+        result = 31 * result + (dt2 != null ? dt2.hashCode() : 0);
+        result = 31 * result + (sessionFactory != null ? sessionFactory.hashCode() : 0);
+        return result;
     }
 }

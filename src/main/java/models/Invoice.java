@@ -23,6 +23,7 @@ public class Invoice {
     private ClientOrderEntity order;
     private SimpleStringProperty contractName;
 
+
     private ObservableList<InvoiceProduct> invoiceProducts;
     private InvoiceEntity invoiceEntity;
 
@@ -39,6 +40,10 @@ public class Invoice {
         this.agreed = invoice.getAgreed()!=0;
 
         this.invoiceEntity = invoice;
+    }
+
+    public ClientOrderEntity getOrder() {
+        return order;
     }
 
     public ObservableList<InvoiceProduct> getInvoiceProducts() {

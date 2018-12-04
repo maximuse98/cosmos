@@ -246,38 +246,38 @@ public class SavingDBTest {
         assertTrue("error", invoiceProductEntity.equals(invoiceProductEntity1));
     }
 
-    //why doesn`t work?
+
     @Test
     public void checkOrderAdd() throws ParseException {
-//        ClientEntity clientEntity = new ClientEntity();
-////        clientEntity.setId(7);
-////        clientEntity.setName("");
-////        clientEntity.setSurname("");
-////        clientEntity.setEmail("");
-////        clientEntity.setAdress("");
-////        clientEntity.setPhone("");
-////        clientEntity.setPhone2("");
-//
-//        ClientOrderEntity clientOrderEntity = new ClientOrderEntity();
-////        clientOrderEntity.setClientByClientId(clientEntity);
-//        clientOrderEntity.setContract("");
-//        clientOrderEntity.setPayment(new Byte("0"));
-//        clientOrderEntity.setRequestId(2);
-//
-//        Session session = sessionFactory.openSession();
-//        session.beginTransaction();
-//        session.save(clientOrderEntity);
-//        session.getTransaction().commit();
-//        session.close();
-//
-//        Session session2 = sessionFactory.openSession();
-//        Query query1 = session2.createQuery(" FROM ClientOrderEntity WHERE requestId=" + clientOrderEntity.getRequestId());
-//        ClientOrderEntity clientOrderEntity1 = (ClientOrderEntity) query1.list().get(0);
-//        session2.close();
-//
-//        clientOrderEntity.setId(clientOrderEntity1.getId());//так как у меня автоинкремент, я id заранее не знаю
-//
-//        assertTrue("error", clientOrderEntity.equals(clientOrderEntity1));
+        ClientEntity clientEntity = new ClientEntity();
+        clientEntity.setId(7);
+        clientEntity.setName("");
+        clientEntity.setSurname("");
+        clientEntity.setEmail("");
+        clientEntity.setAdress("");
+        clientEntity.setPhone("");
+        clientEntity.setPhone2("");
+
+        ClientOrderEntity clientOrderEntity = new ClientOrderEntity();
+        clientOrderEntity.setClientByClientId(clientEntity);
+        clientOrderEntity.setContract("");
+        clientOrderEntity.setPayment(new Byte("0"));
+        clientOrderEntity.setRequestId(2);
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(clientOrderEntity);
+        session.getTransaction().commit();
+        session.close();
+
+        Session session2 = sessionFactory.openSession();
+        Query query1 = session2.createQuery(" FROM ClientOrderEntity WHERE requestId=" + clientOrderEntity.getRequestId());
+        ClientOrderEntity clientOrderEntity1 = (ClientOrderEntity) query1.list().get(0);
+        session2.close();
+
+        clientOrderEntity.setId(clientOrderEntity1.getId());//так как у меня автоинкремент, я id заранее не знаю
+        clientOrderEntity.equals(clientOrderEntity1);
+        assertTrue("error", clientOrderEntity.equals(clientOrderEntity1));
     }
 
     @Test

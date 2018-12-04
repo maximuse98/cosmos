@@ -86,6 +86,9 @@ public class OrderProduct {
             this.productName.set(s);
         }
     }
+    public ClientOrderEntity getOrder() {
+        return order;
+    }
 
     public String getCount() {
         return count.get();
