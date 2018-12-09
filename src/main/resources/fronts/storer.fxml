@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<HBox id="vbox" maxHeight="-Infinity" maxWidth="Infinity" prefHeight="470.0" prefWidth="839.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.StorerController">
+    <children>
+        <JFXTabPane maxHeight="-Infinity" maxWidth="Infinity" prefHeight="470.0" prefWidth="900.0" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab text="Счета-фактуры">
+                    <content>
+                        <AnchorPane fx:id="clientPane" minHeight="0.0" minWidth="0.0" prefHeight="462.0" prefWidth="839.0">
+                            <children>
+                                <TableView fx:id="statementInvoiceTable" editable="true" layoutX="31.0" layoutY="47.0" prefHeight="343.0" prefWidth="778.0">
+                                    <columns>
+                                        <TableColumn fx:id="idInvoiceProductColumn" maxWidth="50.0" prefWidth="50.0" text="ID" />
+                                        <TableColumn fx:id="clientNameColumn" maxWidth="90.0" prefWidth="87.0" text="Имя клиента" />
+                                        <TableColumn fx:id="clientSurnameColumn" maxWidth="110.0" prefWidth="108.0" text="Фамилия клиента" />
+                                        <TableColumn fx:id="productNameColumn" maxWidth="100.0" prefWidth="94.0" text="Наименование продукта" />
+                                        <TableColumn fx:id="clientPhoneColumn" maxWidth="100.0" prefWidth="100.0" text="Телефон " />
+                                        <TableColumn fx:id="clientAdressColumn" maxWidth="200.0" minWidth="0.0" prefWidth="200.0" text="Адрес" />
+                                        <TableColumn fx:id="invoiceProductCountColumn" maxWidth="180.0" prefWidth="137.0" text="Количество продукта" />
+                                        <TableColumn fx:id="invoiceProductLoadedColumn"  prefWidth="91.0" text="Отгружено" />
+                                    </columns>
+                                </TableView>
+                                <Button layoutX="640.0" layoutY="402.0" mnemonicParsing="false" onMouseClicked="#onLoadedChangeClick" prefHeight="25.0" prefWidth="79.0" text="Сохранить" />
+                                <Label id="login" fx:id="loginLabel1" layoutX="70.0" layoutY="16.0" text="Вы авторизваны как " />
+                                <TextField fx:id="statementInvoiceFilter" layoutX="519.0" layoutY="10.0" prefHeight="25.0" prefWidth="290.0" />
+                                <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="484.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image requestedHeight="70" requestedWidth="70" url="/pics/look.png" />
+                                    </image>
+                                </ImageView>
+                                <ImageView fitHeight="24.0" fitWidth="27.0" layoutX="31.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image requestedHeight="60" requestedWidth="60" url="/pics/user.png" />
+                                    </image>
+                                </ImageView>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </JFXTabPane>
+    </children>
+</HBox>
