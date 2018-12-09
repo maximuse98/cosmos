@@ -20,6 +20,7 @@
         <mapping class="entity.ProductEntity"/>
         <mapping class="entity.RequestProductEntity"/>
         <mapping class="entity.UsersEntity"/>
+        <mapping class="entity.StatementInvoiceView"/>
 
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hbm2ddl.auto">update</property> -->
