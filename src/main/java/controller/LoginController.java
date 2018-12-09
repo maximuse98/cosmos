@@ -5,7 +5,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -39,10 +38,19 @@ public class LoginController{
                     ManagerController controller = null;
                     try {
                         controller = new ManagerController();
+                        controller.setLogin(loginField.getText());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    controller.setLogin(loginField.getText());
+                    return controller;
+                } else if (controllerClass == StorerController.class) {
+                    StorerController controller = null;
+                    try {
+                        controller = new StorerController();
+                        controller.setLogin(loginField.getText());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     return controller;
                 } else {
                     try {
@@ -65,6 +73,7 @@ public class LoginController{
         session.close();
 
         if(result.equals("manager")) this.createManager(actionEvent);
+        if(result.equals("storer")) this.createStorer(actionEvent);
     }
 
     private void createManager(ActionEvent actionEvent) throws IOException {
@@ -82,7 +91,7 @@ public class LoginController{
         stage.setTitle("Manager");
         //stage.setMinHeight(560);
         //stage.setMinWidth(550);
-        scene.getStylesheets().add("/css/manager.css");
+        scene.getStylesheets().add("/css/main.css");
         stage.getIcons().add(new Image("/pics/logo.png"));
 
         stage.show();
@@ -97,7 +106,34 @@ public class LoginController{
 
         ((Node) (actionEvent.getSource())).getScene().getWindow().hide();
     }
-    private void createSteward(ActionEvent actionEvent){
+    private void createStorer(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fronts/storer.fxml"));
 
+        fxmlLoader.setControllerFactory(callback);
+        fxmlLoader.load();
+
+        Parent root = fxmlLoader.getRoot();
+        Stage stage = new Stage();
+        Scene scene = new Scene(root);
+        //stage.getIcons().add(new Image(getClass().getResource("/pictures/logo.png").toString(), 512, 512, true, true));
+        //scene.getStylesheets().add("/styles/main.css");
+        stage.setScene(scene);
+        stage.setTitle("Storer");
+        //stage.setMinHeight(560);
+        //stage.setMinWidth(550);
+        scene.getStylesheets().add("/css/main.css");
+        stage.getIcons().add(new Image("/pics/logo.png"));
+
+        stage.show();
+        stage.setResizable(false);
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
+
+        ((Node) (actionEvent.getSource())).getScene().getWindow().hide();
     }
 }

@@ -63,7 +63,7 @@ public class StorerController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.setFactories();
-        this.setOnEditCommit();
+        //this.setOnEditCommit();
         this.setAllStatementsInvoices();
         this.setLoginLabel();
     }
@@ -84,7 +84,8 @@ public class StorerController implements Initializable {
                 SimpleBooleanProperty p = new SimpleBooleanProperty(statementInvoice.getLoaded());
                 p.addListener(new ChangeListener<Boolean>() {
                     public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
-                        statementInvoice.setLoaded(new_val);
+                        //мы еще никаких обновлений в бд не делаем!!
+                        statementInvoice.setCheckBoxStatus(new_val);
                     }
                 });
                 return p;
@@ -98,8 +99,19 @@ public class StorerController implements Initializable {
                 return cell;
             }
         });
+    }
 
-
+    @Deprecated
+    private void setOnEditCommit() {
+        invoiceProductLoadedColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<StatementInvoice, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<StatementInvoice, String> t) {
+                ((StatementInvoice) t.getTableView().getItems().get(
+                        t.getTablePosition().getRow())
+                ).setCheckBoxStatus(Boolean.getBoolean(t.getNewValue()));
+                refreshStatementInvoiceTable();
+            }
+        });
     }
 
     private void setAllStatementsInvoices() {
@@ -154,19 +166,6 @@ public class StorerController implements Initializable {
         this.login = login;
     }
 
-    private void setOnEditCommit() {
-        invoiceProductLoadedColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<StatementInvoice, String>>() {
-            @Override
-            public void handle(TableColumn.CellEditEvent<StatementInvoice, String> t) {
-                ((StatementInvoice) t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())
-                ).setLoaded(Boolean.getBoolean(t.getNewValue()));
-                refreshStatementInvoiceTable();
-            }
-        });
-
-    }
-
     private void refreshStatementInvoiceTable() {
         statementInvoiceTable.refresh();
         try {
@@ -181,24 +180,30 @@ public class StorerController implements Initializable {
     }
 
     public void onLoadedChangeClick() {
-
-        StatementInvoice selectedChange = (StatementInvoice) statementInvoiceTable.getSelectionModel().getSelectedItem();
-
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        Iterator<StatementInvoice> itr = statementInvoicesList.iterator();
-        Query query = session.createQuery("update InvoiceProductEntity set loaded = :newLoaded where id = :selectedId");
-        while (itr.hasNext()) {
-            StatementInvoice result = itr.next();
-            if (result.getId() == selectedChange.getId()) {
-                query.setParameter("newLoaded", selectedChange.getStatementInvoiceView().getLoaded());
-                query.setParameter("selectedId", selectedChange.getStatementInvoiceView().getId());
-                query.executeUpdate();
+        Iterator<StatementInvoice> iterator = statementInvoicesList.iterator();
+        while(iterator.hasNext()){
+            StatementInvoice statementInvoice = iterator.next();
+            if(statementInvoice.getCheckBoxStatus()) {
+                statementInvoice.setLoaded(true);
             }
         }
-        session.getTransaction().commit();
-        session.close();
         this.refreshStatementInvoiceTable();
+//        StatementInvoice selectedChange = (StatementInvoice) statementInvoiceTable.getSelectionModel().getSelectedItem();
+//
+//        Session session = sessionFactory.openSession();
+//        session.beginTransaction();
+//        Iterator<StatementInvoice> itr = statementInvoicesList.iterator();
+//        Query query = session.createQuery("update InvoiceProductEntity set loaded = :newLoaded where id = :selectedId");
+//        while (itr.hasNext()) {
+//            StatementInvoice result = itr.next();
+//            if (result.getId() == selectedChange.getId()) {
+//                query.setParameter("newLoaded", selectedChange.getStatementInvoiceView().getLoaded());
+//                query.setParameter("selectedId", selectedChange.getStatementInvoiceView().getId());
+//                query.executeUpdate();
+//            }
+//        }
+//        session.getTransaction().commit();
+//        session.close();
+//        this.refreshStatementInvoiceTable();
     }
-
 }

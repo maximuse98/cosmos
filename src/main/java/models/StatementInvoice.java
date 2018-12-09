@@ -1,9 +1,11 @@
 package models;
 
+import entity.InvoiceProductEntity;
 import entity.StatementInvoiceView;
 import javafx.beans.property.SimpleStringProperty;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import util.HibernateUtil;
 
 import java.util.Objects;
@@ -17,6 +19,9 @@ public class StatementInvoice {
     private SimpleStringProperty productName;
     private SimpleStringProperty count;
     private Boolean loaded;
+
+    //это только для checkBox
+    private Boolean checkBoxStatus = false;
 
     private StatementInvoiceView statementInvoiceView;
 
@@ -32,6 +37,18 @@ public class StatementInvoice {
         this.count = new SimpleStringProperty(Integer.toString(statementInvoiceView.getCount()));
         this.loaded = statementInvoiceView.getLoaded() != 0;
         this.statementInvoiceView = statementInvoiceView;
+    }
+
+    public Boolean getCheckBoxStatus() {
+        return checkBoxStatus;
+    }
+
+    public void setCheckBoxStatus(Boolean checkBoxStatus) {
+        this.checkBoxStatus = checkBoxStatus;
+    }
+
+    public SessionFactory getSessionFactory() {
+        return sessionFactory;
     }
 
     public String getId() {
@@ -163,9 +180,20 @@ public class StatementInvoice {
     }
 
     private void updateEntity() {
+        //ищем соответствующий InvoiceProduct по id
+        Session session2 = sessionFactory.openSession();
+        String sql = " FROM InvoiceProductEntity WHERE id=" + statementInvoiceView.getId();
+        Query query1 = session2.createQuery(sql);
+        InvoiceProductEntity invoiceProductEntity = (InvoiceProductEntity) query1.list().get(0);
+        session2.close();
+
+        //обновляем статус loaded
+        invoiceProductEntity.setLoaded(statementInvoiceView.getLoaded());
+
+        //мы обновляем не вьюшку, а InvoiceProduct
         Session session = sessionFactory.openSession();
         session.beginTransaction();
-        session.update(statementInvoiceView);
+        session.update(invoiceProductEntity);
         session.getTransaction().commit();
         session.close();
     }
