@@ -6,11 +6,16 @@ import entity.InvoiceEntity;
 import entity.InvoiceProductEntity;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import util.HibernateUtil;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -132,6 +137,11 @@ public class Invoice {
             ClientOrderEntity result = (ClientOrderEntity) query.list().get(0);
             session.close();
 
+            if (result.getPayment()!=1){
+                this.setAlert("Данный заказ еще не оплачен");
+                return;
+            }
+
             invoiceEntity.setClientOrderByOrderId(result);
 
             this.updateEntity();
@@ -171,5 +181,16 @@ public class Invoice {
 
     public void setInvoiceEntity(InvoiceEntity invoiceEntity) {
         this.invoiceEntity = invoiceEntity;
+    }
+
+    private void setAlert(String reason){
+        Exception e = new Exception(reason);
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText("Добавление невозможно");
+        alert.getDialogPane().setExpandableContent(new ScrollPane(new TextArea(sw.toString())));
+        alert.showAndWait();
     }
 }

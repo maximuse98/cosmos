@@ -2,12 +2,19 @@ package models;
 
 import entity.InvoiceEntity;
 import entity.InvoiceProductEntity;
+import entity.OrderProductEntity;
 import entity.ProductEntity;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import util.HibernateUtil;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class InvoiceProduct {
     private SimpleStringProperty id;
@@ -58,13 +65,25 @@ public class InvoiceProduct {
         return productName;
     }
 
-    public void setProductName(String productName) {
+    public void setProductName(String newProductName) {
         String s = this.getProductName();
         try {
-            this.productName.set(productName);
+            String hql = " FROM OrderProductEntity " +
+                    " WHERE clientOrderByOrderId.id = " + invoiceProductEntity.getInvoiceByInvoiceId().getClientOrderByOrderId().getId() + "" +
+                    " AND productByProductId.name LIKE '" + newProductName + "'";
+            Session session = sessionFactory.openSession();
+            Query query = session.createQuery(hql);
+            query.list().get(0);
+            session.close();
+        }catch (Exception e){
+            this.setAlert("Заказ не указан либо в указанном заказе нет такого продукта");
+            return;
+        }
+        try {
+            this.productName.set(newProductName);
 
             String hql = " FROM ProductEntity " +
-                    " WHERE name LIKE '"+ productName+"'";
+                    " WHERE name LIKE '"+ newProductName+"'";
             Session session = sessionFactory.openSession();
             Query query = session.createQuery(hql);
             ProductEntity result = (ProductEntity) query.list().get(0);
@@ -87,6 +106,25 @@ public class InvoiceProduct {
 
     public void setCount(String count) {
         String s = this.getCount();
+
+        OrderProductEntity result;
+        try {
+            String hql = " FROM OrderProductEntity " +
+                    " WHERE clientOrderByOrderId.id = " + invoiceProductEntity.getInvoiceByInvoiceId().getClientOrderByOrderId().getId() + "" +
+                    " AND productByProductId.name LIKE '" + productName.get() + "'";
+            Session session = sessionFactory.openSession();
+            Query query = session.createQuery(hql);
+            result = (OrderProductEntity) query.list().get(0);
+            session.close();
+        }catch (Exception e){
+            this.setAlert("Нет связанного заказа либо продукта");
+            return;
+        }
+        if(result.getRest()<Integer.valueOf(count)){
+            this.setAlert("Невозможно отгрузить больше, чем указано в заказе");
+            return;
+        }
+        invoiceProductEntity.getInvoiceByInvoiceId().getClientOrderByOrderId().getId();
         try {
             this.count.set(count);
             invoiceProductEntity.setCount(Integer.valueOf(count));
@@ -135,5 +173,16 @@ public class InvoiceProduct {
 
     public void setInvoiceProductEntity(InvoiceProductEntity invoiceProductEntity) {
         this.invoiceProductEntity = invoiceProductEntity;
+    }
+
+    private void setAlert(String reason){
+        Exception e = new Exception(reason);
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText("Добавление невозможно");
+        alert.getDialogPane().setExpandableContent(new ScrollPane(new TextArea(sw.toString())));
+        alert.showAndWait();
     }
 }

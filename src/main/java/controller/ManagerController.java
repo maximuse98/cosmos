@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -201,7 +202,7 @@ public class ManagerController implements Initializable {
 
     /**
      * добавление всех данных в соответствующие таблицы
-     * запуск при инициализации и при манипулации со строками -
+     * запуск при инициализации и при манипуляции со строками -
      * добавление и удаление
      **/
     private void setAllClients(){
@@ -596,6 +597,9 @@ public class ManagerController implements Initializable {
      *
      * возможность изменять id отключена
      * для включения - раскомментировать setCellFactory() соответствующих столбцов
+     *
+     * отключено изменение .setLoaded для InvoiceProduct - это роль кладовщика
+     * для включения - удалить строку cell.setEditable(false);
      */
     private void setFactories() {
         clientIdColumn.setCellValueFactory(new PropertyValueFactory<Client,String>("id"));
@@ -757,6 +761,7 @@ public class ManagerController implements Initializable {
             public TableCell call(TableColumn param) {
                 CheckBoxTableCell cell = new CheckBoxTableCell();
                 cell.setAlignment(Pos.CENTER);
+                cell.setEditable(false);
                 return cell;
             }
         });

@@ -66,6 +66,7 @@ public class StorerController implements Initializable {
         //this.setOnEditCommit();
         this.setAllStatementsInvoices();
         this.setLoginLabel();
+
     }
 
     private void setFactories() {
@@ -127,7 +128,6 @@ public class StorerController implements Initializable {
         session.close();
         this.setStatementInvoiceFilter();
     }
-
 
     private void setStatementInvoiceFilter() {
         FilteredList<StatementInvoice> filteredData = new FilteredList<>(statementInvoicesList, p -> true);

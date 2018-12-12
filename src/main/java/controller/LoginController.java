@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
@@ -29,6 +30,10 @@ public class LoginController{
     private TextField loginField;
     @FXML
     private PasswordField passwordField;
+    @FXML
+    private ImageView wrong1;
+    @FXML
+    private ImageView wrong2;
 
     public LoginController() {
         callback = new Callback<Class<?>, Object>() {
@@ -69,11 +74,18 @@ public class LoginController{
                 " WHERE login LIKE '"+ loginField.getText()+"' AND password LIKE '"+ passwordField.getText() +"'";
         Session session = sessionFactory.openSession();
         Query query = session.createQuery(hql);
-        String result = (String) query.getSingleResult();
+        try {
+            String result = (String) query.getSingleResult();
+            if(result.equals("manager")) this.createManager(actionEvent);
+            if(result.equals("storer")) this.createStorer(actionEvent);
+        }
+        catch (Exception e){
+            wrong1.setVisible(true);
+            wrong2.setVisible(true);
+            passwordField.clear();
+        }
         session.close();
 
-        if(result.equals("manager")) this.createManager(actionEvent);
-        if(result.equals("storer")) this.createStorer(actionEvent);
     }
 
     private void createManager(ActionEvent actionEvent) throws IOException {
@@ -99,8 +111,30 @@ public class LoginController{
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
-                Platform.exit();
-                System.exit(0);
+                //Platform.exit();
+                //System.exit(0);
+                Stage stage = new Stage();
+                Parent root = null;
+                try {
+                    root = FXMLLoader.load(getClass().getResource("/fronts/login.fxml"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                stage.setTitle("Authorization");
+                Scene scene = new Scene(root);
+
+                stage.setScene(scene);
+                stage.setResizable(false);
+                scene.getStylesheets().add("/css/load.css");
+                stage.getIcons().add(new Image("/pics/logo.png"));
+                stage.show();
+                stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent event) {
+                        Platform.exit();
+                        System.exit(0);
+                    }
+                });
             }
         });
 
@@ -115,12 +149,10 @@ public class LoginController{
         Parent root = fxmlLoader.getRoot();
         Stage stage = new Stage();
         Scene scene = new Scene(root);
-        //stage.getIcons().add(new Image(getClass().getResource("/pictures/logo.png").toString(), 512, 512, true, true));
-        //scene.getStylesheets().add("/styles/main.css");
+
         stage.setScene(scene);
         stage.setTitle("Storer");
-        //stage.setMinHeight(560);
-        //stage.setMinWidth(550);
+
         scene.getStylesheets().add("/css/main.css");
         stage.getIcons().add(new Image("/pics/logo.png"));
 
@@ -129,8 +161,31 @@ public class LoginController{
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
-                Platform.exit();
-                System.exit(0);
+                //Platform.exit();
+                //System.exit(0);
+
+                Stage stage = new Stage();
+                Parent root = null;
+                try {
+                    root = FXMLLoader.load(getClass().getResource("/fronts/login.fxml"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                stage.setTitle("Authorization");
+                Scene scene = new Scene(root);
+
+                stage.setScene(scene);
+                stage.setResizable(false);
+                scene.getStylesheets().add("/css/load.css");
+                stage.getIcons().add(new Image("/pics/logo.png"));
+                stage.show();
+                stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent event) {
+                        Platform.exit();
+                        System.exit(0);
+                    }
+                });
             }
         });
 
