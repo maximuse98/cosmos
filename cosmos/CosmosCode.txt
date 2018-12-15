@@ -1,0 +1,133 @@
+    /**
+     * добавление всех данных в соответствующие таблицы
+     * запуск при инициализации и при манипуляции со строками -
+     * добавление и удаление
+     **/
+    private void setAllClients(){
+        usersList = FXCollections.observableArrayList();
+        Session session = sessionFactory.openSession();
+        Query query1 = session.createQuery(" FROM ClientEntity ");
+        Iterator iter = query1.list().iterator();
+        while(iter.hasNext()){
+            ClientEntity clientEntity = (ClientEntity) iter.next();
+            usersList.add(new Client(clientEntity));
+        }
+        clientTable.setItems(usersList);
+        session.close();
+        this.setClientFilter();
+    }
+
+    /**
+     * добавление нового клиента
+     * возможно только при автоинкременте
+     **/
+    public void onClientAddClick(){
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.save(new ClientEntity());
+        session.getTransaction().commit();
+        session.close();
+
+        this.refreshClientTable();
+    }
+
+    /**
+     * удаляется только выбранный клиент
+     **/
+    public void onClientDeleteClick(){
+        Client selected = (Client) clientTable.getSelectionModel().getSelectedItem();
+
+        try {
+            String hql1 = "FROM ClientRequestEntity";
+            Session session3 = sessionFactory.openSession();
+            Query query3 = session3.createQuery(hql1);
+            Iterator iterator2 = query3.list().iterator();
+            while (iterator2.hasNext()) {
+                ClientRequestEntity result = (ClientRequestEntity) iterator2.next();
+                if (result.getClientByClientId().getId() == Integer.valueOf(selected.getId())) {
+                    this.setAlert("Удалите все связанные заявки");
+                    return;
+                }
+            }
+            session3.close();
+        }catch (NullPointerException e){}
+
+        String hql = "FROM ClientOrderEntity";
+        Session session2 = sessionFactory.openSession();
+        Query query2 = session2.createQuery(hql);
+        Iterator iterator1 = query2.list().iterator();
+        while(iterator1.hasNext()) {
+            ClientOrderEntity result = (ClientOrderEntity) iterator1.next();
+            try {
+                if (result.getClientByClientId().getId() == Integer.valueOf(selected.getId())) {
+                    this.setAlert("Удалите все связанные заказы");
+                    return;
+                }
+            }
+            catch (NullPointerException e){}
+        }
+        session2.close();
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.delete(selected.getClientEntity());
+        session.getTransaction().commit();
+        session.close();
+
+        this.refreshClientTable();
+    }
+
+    /**
+     * setFactories() - маппинг столбцов и соотвествующих атрибутов в models
+     * setOnEditCommit() - добавление хендлеров на изменение данных - запуск соответствующих сетеров в models
+     *
+     * возможность изменять id отключена
+     * для включения - раскомментировать setCellFactory() соответствующих столбцов
+     */
+    private void setFactories() {
+        clientIdColumn.setCellValueFactory(new PropertyValueFactory<Client,String>("id"));
+        clientNameColumn.setCellValueFactory(new PropertyValueFactory<Client,String>("name"));
+        clientSurnameColumn.setCellValueFactory(new PropertyValueFactory<Client,String>("surname"));
+        clientPhoneColumn.setCellValueFactory(new PropertyValueFactory<Client,String>("phone"));
+        clientPhone2Column.setCellValueFactory(new PropertyValueFactory<Client,String>("phone2"));
+        clientAdressColumn.setCellValueFactory(new PropertyValueFactory<Client,String>("adress"));
+        clientEmailColumn.setCellValueFactory(new PropertyValueFactory<Client,String>("email"));
+    }
+
+    /**
+     * фильтры таблиц, связанные с продуктами, устанавливаются
+     * непосредственно в момент нажатия на конкретное поле основной таблицы
+     **/
+    private void setClientFilter(){
+        FilteredList<Client> filteredData = new FilteredList<>(usersList, p -> true);
+        clientFilter.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(client -> {
+                // If filter text is empty, display all persons.
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (client.getId().toLowerCase().contains(lowerCaseFilter) ||
+                        client.getName().toLowerCase().contains(lowerCaseFilter) ||
+                        client.getSurname().toLowerCase().contains(lowerCaseFilter) ||
+                        client.getAdress().toLowerCase().contains(lowerCaseFilter) ||
+                        client.getEmail().toLowerCase().contains(lowerCaseFilter) ||
+                        client.getAdress().toLowerCase().contains(lowerCaseFilter) ||
+                        client.getPhone().toLowerCase().contains(lowerCaseFilter) ||
+                        client.getPhone2().toLowerCase().contains(lowerCaseFilter))
+                {
+                    return true; // Filter matches.
+                }else {
+                    return false; // Does not match.
+                }
+            });
+        });
+        SortedList<Client> sortedData = new SortedList<>(filteredData);
+
+        // 4. Bind the SortedList comparator to the TableView comparator.
+        sortedData.comparatorProperty().bind(clientTable.comparatorProperty());
+
+        // 5. Add sorted (and filtered) data to the table.
+        clientTable.setItems(sortedData);
+    }
